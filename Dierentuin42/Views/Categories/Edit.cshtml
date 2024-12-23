@@ -1,0 +1,25 @@
+﻿@model Dierentuin42.Models.Category
+
+<h1>Edit Categorie</h1>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="SelectedAnimalIds">Select Animals</label>
+        <select id="SelectedAnimalIds" name="selectedAnimalIds" multiple class="form-control">
+            @foreach (var animal in ViewBag.AvailableAnimals)
+            {
+                <option value="@animal.Value")>@animal.Text</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <div>
+        <a asp-action="Index">Terug naar overzicht</a>
+    </div>
+</form>

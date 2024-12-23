@@ -1,0 +1,35 @@
+﻿* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+}
+
+.form-group {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    align-content: center;
+    padding: 20px;
+    position: relative;
+    top: 40px
+}
+
+.form-group h1 {
+    font-family: 'Poppins';
+    font-size: 40px
+}
+.form-group input {
+    font-family: 'Poppins';
+    position: relative;
+    top: 20px;
+    padding: 5px;
+    border-radius: 6px;
+ }
+
+#btnsearch {
+    font-family: 'Poppins';
+    position: relative;
+    top: 20px;
+    margin-top: 20px;
+}

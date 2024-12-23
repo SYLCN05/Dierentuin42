@@ -1,0 +1,9 @@
+﻿@Dierentuin42_HostAddress = https://localhost:7003
+
+
+
+###
+
+GET {{Dierentuin42_HostAddress}}/animals/index/{id}
+
+###

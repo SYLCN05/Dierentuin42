@@ -9,12 +9,14 @@ namespace Dierentuin42.Models
         public int Id { get; set; }
 
 
-
+        [Required(ErrorMessage ="Naam is verplicht")]
+        [StringLength(50, ErrorMessage ="Naam mag niet langer zijn dan 50 tekens")]
         [Display(Name = "Naam")]
         public string Name { get; set; }
 
 
-
+        [Required(ErrorMessage = "Soort is verplicht.")]
+        [StringLength(50, ErrorMessage = "Soort mag niet langer zijn dan 50 tekens.")]
         [Display(Name = "Soort")]
         public string Species { get; set; }
 
@@ -35,6 +37,8 @@ namespace Dierentuin42.Models
             VeryLarge
 
         }
+
+        [Required(ErrorMessage = "Grootte van het dier is verplicht.")]
         [Display(Name = "Grootte van het dier")]
         public Size AnimalSize { get; set; }
 
@@ -46,6 +50,8 @@ namespace Dierentuin42.Models
             Insectivore,
             Piscivore
         }
+
+        [Required(ErrorMessage = "Dieet is verplicht.")]
         [Display(Name = "Dieet")]
         public DietaryClass AnimalDiet { get; set; }
 
@@ -55,9 +61,12 @@ namespace Dierentuin42.Models
             Nocturnal,
             Cathemeral
         }
+
+        [Required(ErrorMessage = "Activiteits patroon is verplicht.")]
         [Display(Name = "Activiteits patroon")]
         public ActivityPattern AnimalActivityPattern { get; set; }
 
+        [StringLength(50, ErrorMessage = "Prooi naam mag niet langer zijn dan 50 tekens.")]
         [Display(Name = "Prooi")]
         public string Prey { get; set; }
 
@@ -87,8 +96,8 @@ namespace Dierentuin42.Models
             }
         }
 
+        [Required(ErrorMessage = "Veiligheidsvereisten zijn verplicht.")]
         [Display(Name = "VeiligheidsVereisten")]
         public SecurityLevel SecurityRequirement { get; set; }
-
     }
 }

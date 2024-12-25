@@ -20,6 +20,7 @@ namespace Dierentuin42.Models
         [Display(Name = "Soort")]
         public string Species { get; set; }
 
+        [Display(Name = "Categorie")]
         public int? CategoryId { get; set; }
 
         [Display(Name = "Categorie")]
@@ -39,8 +40,8 @@ namespace Dierentuin42.Models
         }
 
         [Required(ErrorMessage = "Grootte van het dier is verplicht.")]
-        [Display(Name = "Grootte van het dier")]
-        public Size AnimalSize { get; set; }
+        [Display(Name = "Grootte")]
+        public Size? AnimalSize { get; set; }
 
         public enum DietaryClass
         {
@@ -53,7 +54,7 @@ namespace Dierentuin42.Models
 
         [Required(ErrorMessage = "Dieet is verplicht.")]
         [Display(Name = "Dieet")]
-        public DietaryClass AnimalDiet { get; set; }
+        public DietaryClass? AnimalDiet { get; set; }
 
         public enum ActivityPattern
         {
@@ -63,13 +64,15 @@ namespace Dierentuin42.Models
         }
 
         [Required(ErrorMessage = "Activiteits patroon is verplicht.")]
-        [Display(Name = "Activiteits patroon")]
-        public ActivityPattern AnimalActivityPattern { get; set; }
+        [Display(Name = "Activiteitspatroon")]
+        public ActivityPattern? AnimalActivityPattern { get; set; }
 
+        [Required(ErrorMessage = "Prooi is verplicht.")]
         [StringLength(50, ErrorMessage = "Prooi naam mag niet langer zijn dan 50 tekens.")]
         [Display(Name = "Prooi")]
         public string Prey { get; set; }
 
+        [Display(Name = "Verblijf")]
         public int? EnclosureId { get; set; }
 
         [Display(Name = "Verblijf")]
@@ -89,7 +92,7 @@ namespace Dierentuin42.Models
                     Size.Medium => SpaceRequirements.Medium,
                     Size.Large => SpaceRequirements.Large,
                     Size.VeryLarge => SpaceRequirements.VeryLarge,
-                    _ => 10.0                 // default ruimte
+                    _ => 10.0                 
                 };
 
 
@@ -97,7 +100,7 @@ namespace Dierentuin42.Models
         }
 
         [Required(ErrorMessage = "Veiligheidsvereisten zijn verplicht.")]
-        [Display(Name = "VeiligheidsVereisten")]
-        public SecurityLevel SecurityRequirement { get; set; }
+        [Display(Name = "Veiligheidsvereisten")]
+        public SecurityLevel? SecurityRequirement { get; set; }
     }
 }

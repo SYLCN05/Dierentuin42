@@ -4,6 +4,64 @@
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/animals/index/{id}
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/animals
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/animals/search?name=test
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/animals
+
+###
+
+POST {{Dierentuin42_HostAddress}}/api/animals
+Content-Type: application/json
+
+{
+    "name": "Leo",
+    "species": "Lion",
+    "categoryId": 3,
+    "animalSize": 1,
+    "animalDiet": 2,
+    "animalActivityPattern": 0,
+    "prey": "Zebra, Antelope",
+    "enclosureId": 3,
+    "securityRequirement": 2
+}
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/animals/15
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/animals/15
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/animals/search?name=Relatietest
+
+###
+
+PUT {{Dierentuin42_HostAddress}}/api/animals/0
+Content-Type: application/json
+
+{
+  "name": "testnameveranderdtest",
+  "species": "Chimpanseeveranderttest",
+  "categoryId": 3,
+  "animalSize": 1,
+  "animalDiet": 1,
+  "animalActivityPattern": 2,
+  "prey": "patates",
+  "enclosureId": 3,
+  "spaceRequirement": 0.01,
+  "spaceRequirement": 1
+}
 
 ###

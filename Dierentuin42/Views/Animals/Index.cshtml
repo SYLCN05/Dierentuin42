@@ -15,62 +15,149 @@
 
 <!-- TABEL DIEREN -->
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body p-4">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().Name)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().Species)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().Category)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().AnimalSize)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().AnimalDiet)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().AnimalActivityPattern)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().Prey)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().Enclosure)</th>
-                                    <th scope="col" style="width: 10%;">@Html.DisplayNameFor(model => model.First().SecurityRequirement)</th>
-                                    <th scope="col" style="width: 10%;">Acties</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
+    <form method="get" asp-action="Index">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-body p-4">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead class="thead-dark">
                                     <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Species)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Category.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.AnimalSize)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.AnimalDiet)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.AnimalActivityPattern)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Prey)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Enclosure.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.SecurityRequirement)</td>
-                                        <td>
-                                            <div class="d-flex justify-content-center">
-                                                <a class="btn btn-warning btn-sm mx-2 shadow-sm" asp-action="Edit" asp-route-id="@item.Id" title="Bewerk Dier">
-                                                    <i class="fas fa-edit"></i> Bewerk
-                                                </a>
-                                                <a class="btn btn-info btn-sm mx-2 shadow-sm" asp-action="Details" asp-route-id="@item.Id" title="Bekijk Details">
-                                                    <i class="fas fa-info-circle"></i> Details
-                                                </a>
-                                                <a class="btn btn-danger btn-sm mx-2 shadow-sm" asp-action="Delete" asp-route-id="@item.Id" title="Verwijder Dier">
-                                                    <i class="fas fa-trash-alt"></i> Verwijder
-                                                </a>
-                                            </div>
-                                        </td>
+                                        <th scope="col">
+                                            Naam
+                                            <select class="form-control form-control-sm mt-2" name="filterName">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["Names"] as List<string>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Soort
+                                            <select class="form-control form-control-sm mt-2" name="filterSpecies">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["Species"] as List<string>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Categorie
+                                            <select class="form-control form-control-sm mt-2" name="filterCategory">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["Categories"] as List<string>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Grootte
+                                            <select class="form-control form-control-sm mt-2" name="filterSize">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["Sizes"] as List<Dierentuin42.Models.Animal.Size>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Dieet
+                                            <select class="form-control form-control-sm mt-2" name="filterDiet">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["Diets"] as List<Dierentuin42.Models.Animal.DietaryClass>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Activiteitspatroon
+                                            <select class="form-control form-control-sm mt-2" name="filterActivityPattern">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["ActivityPatterns"] as List<Dierentuin42.Models.Animal.ActivityPattern>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Prooi
+                                            <select class="form-control form-control-sm mt-2" name="filterPrey">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["Prey"] as List<string>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Verblijf
+                                            <select class="form-control form-control-sm mt-2" name="filterEnclosure">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["Enclosures"] as List<string>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Veiligheidsvereisten
+                                            <select class="form-control form-control-sm mt-2" name="filterSecurity">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["SecurityLevels"] as List<Dierentuin42.Models.Animal.SecurityLevel>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th scope="col">
+                                            Acties
+                                            <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Filters toepassen</button>
+                                        </th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Species)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Category.Name)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.AnimalSize)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.AnimalDiet)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.AnimalActivityPattern)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Prey)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Enclosure.Name)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.SecurityRequirement)</td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <a class="btn btn-warning btn-sm mx-2 shadow-sm" asp-action="Edit" asp-route-id="@item.Id" title="Bewerk Dier">
+                                                        <i class="fas fa-edit"></i> Bewerk
+                                                    </a>
+                                                    <a class="btn btn-info btn-sm mx-2 shadow-sm" asp-action="Details" asp-route-id="@item.Id" title="Bekijk Details">
+                                                        <i class="fas fa-info-circle"></i> Details
+                                                    </a>
+                                                    <a class="btn btn-danger btn-sm mx-2 shadow-sm" asp-action="Delete" asp-route-id="@item.Id" title="Verwijder Dier">
+                                                        <i class="fas fa-trash-alt"></i> Verwijder
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
+
 
 <style>
     body {
@@ -190,20 +277,4 @@
         background-color: #343a40;
         color: #fff;
     }
-
-    /* TRANSITIE KNOPPEN (Check tutorial in YT playlist als je nog wilt aanpassen (voor mezelf)) */
-    .btn-primary, .btn-warning, .btn-info, .btn-danger {
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-
-    /* TRANSITIE KNOPPEN (Check tutorial in YT playlist als je nog wilt aanpassen (voor mezelf)) */
-    .btn-primary, .btn-warning, .btn-info, .btn-danger {
-        transition: all 0.3s ease-in-out;
-    }
-
-        .btn-primary:hover, .btn-warning:hover, .btn-info:hover, .btn-danger:hover {
-            transform: translateY(-4px);
-            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-        }
 </style>

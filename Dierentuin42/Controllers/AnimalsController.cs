@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Dierentuin42.Data;
 using Dierentuin42.Models;
 using Microsoft.CodeAnalysis.Elfie.Model.Strings;
+using System.Linq.Expressions;
 
 namespace Dierentuin42.Controllers
 {
@@ -20,12 +21,85 @@ namespace Dierentuin42.Controllers
             _context = context;
         }
 
-        // GET: Animals
-        public async Task<IActionResult> Index()
+        // GET: Animals (FILTERS/SORTEREN)
+        public async Task<IActionResult> Index(string filterName, string filterSpecies, string filterCategory,
+            string filterSize, string filterDiet, string filterActivityPattern, string filterPrey,
+            string filterEnclosure, string filterSecurity, string sortColumn, string sortOrder)
         {
-            var dierentuin42Context = _context.Animal.Include(a => a.Category).Include(a => a.Enclosure);
-            return View(await dierentuin42Context.ToListAsync());
+            var animals = _context.Animal.Include(a => a.Category).Include(a => a.Enclosure).AsQueryable();
+
+            // FILTEREN
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                animals = animals.Where(a => a.Name.Contains(filterName));
+            }
+
+            if (!string.IsNullOrEmpty(filterSpecies))
+            {
+                animals = animals.Where(a => a.Species.Contains(filterSpecies));
+            }
+
+            if (!string.IsNullOrEmpty(filterCategory))
+            {
+                animals = animals.Where(a => a.Category.Name.Contains(filterCategory));
+            }
+
+            // FILTERS VOOR ELK VELD
+            if (!string.IsNullOrEmpty(filterSize) && Enum.TryParse(filterSize, out Animal.Size size))
+            {
+                animals = animals.Where(a => a.AnimalSize == size);
+            }
+
+            if (!string.IsNullOrEmpty(filterDiet) && Enum.TryParse(filterDiet, out Animal.DietaryClass diet))
+            {
+                animals = animals.Where(a => a.AnimalDiet == diet);
+            }
+
+            if (!string.IsNullOrEmpty(filterActivityPattern) && Enum.TryParse(filterActivityPattern, out Animal.ActivityPattern activity))
+            {
+                animals = animals.Where(a => a.AnimalActivityPattern == activity);
+            }
+
+            if (!string.IsNullOrEmpty(filterPrey))
+            {
+                animals = animals.Where(a => a.Prey.Contains(filterPrey));
+            }
+
+            if (!string.IsNullOrEmpty(filterEnclosure))
+            {
+                animals = animals.Where(a => a.Enclosure.Name.Contains(filterEnclosure));
+            }
+
+            if (!string.IsNullOrEmpty(filterSecurity) && Enum.TryParse(filterSecurity, out Animal.SecurityLevel security))
+            {
+                animals = animals.Where(a => a.SecurityRequirement == security);
+            }
+
+            // SORTEREN
+            if (!string.IsNullOrEmpty(sortColumn))
+            {
+                var param = Expression.Parameter(typeof(Animal), "x");
+                var property = Expression.Property(param, sortColumn);
+                var lambda = Expression.Lambda<Func<Animal, object>>(Expression.Convert(property, typeof(object)), param);
+                animals = sortOrder == "asc" ? animals.OrderBy(lambda) : animals.OrderByDescending(lambda);
+            }
+
+            // UNIEKE WAARDES VOOR FILTER
+            ViewData["Names"] = await _context.Animal.Select(a => a.Name).Distinct().ToListAsync();
+            ViewData["Species"] = await _context.Animal.Select(a => a.Species).Distinct().ToListAsync();
+            ViewData["Prey"] = await _context.Animal.Select(a => a.Prey).Distinct().ToListAsync();
+            ViewData["Categories"] = await _context.Category.Select(c => c.Name).Distinct().ToListAsync();
+            ViewData["Sizes"] = Enum.GetValues(typeof(Animal.Size)).Cast<Animal.Size>().ToList();
+            ViewData["Diets"] = Enum.GetValues(typeof(Animal.DietaryClass)).Cast<Animal.DietaryClass>().ToList();
+            ViewData["ActivityPatterns"] = Enum.GetValues(typeof(Animal.ActivityPattern)).Cast<Animal.ActivityPattern>().ToList();
+            ViewData["Enclosures"] = await _context.Enclosure.Select(e => e.Name).Distinct().ToListAsync();
+            ViewData["SecurityLevels"] = Enum.GetValues(typeof(Animal.SecurityLevel)).Cast<Animal.SecurityLevel>().ToList();
+
+            // GEEF TERUG
+            return View(await animals.ToListAsync());
         }
+
+
 
         // GET: Animals/Details/5
         public async Task<IActionResult> Details(int? id)

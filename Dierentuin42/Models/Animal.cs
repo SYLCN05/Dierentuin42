@@ -10,13 +10,13 @@ namespace Dierentuin42.Models
 
 
         [Required(ErrorMessage ="Naam is verplicht")]
-        [StringLength(50, ErrorMessage ="Naam mag niet langer zijn dan 50 tekens")]
+        [StringLength(20, ErrorMessage = "Naam mag niet langer zijn dan 20 tekens")]
         [Display(Name = "Naam")]
         public string Name { get; set; }
 
 
         [Required(ErrorMessage = "Soort is verplicht.")]
-        [StringLength(50, ErrorMessage = "Soort mag niet langer zijn dan 50 tekens.")]
+        [StringLength(20, ErrorMessage = "Soort mag niet langer zijn dan 20 tekens.")]
         [Display(Name = "Soort")]
         public string Species { get; set; }
 
@@ -68,7 +68,7 @@ namespace Dierentuin42.Models
         public ActivityPattern? AnimalActivityPattern { get; set; }
 
         [Required(ErrorMessage = "Prooi is verplicht.")]
-        [StringLength(50, ErrorMessage = "Prooi naam mag niet langer zijn dan 50 tekens.")]
+        [StringLength(20, ErrorMessage = "Prooi naam mag niet langer zijn dan 20 tekens.")]
         [Display(Name = "Prooi")]
         public string Prey { get; set; }
 
@@ -102,5 +102,12 @@ namespace Dierentuin42.Models
         [Required(ErrorMessage = "Veiligheidsvereisten zijn verplicht.")]
         [Display(Name = "Veiligheidsvereisten")]
         public SecurityLevel? SecurityRequirement { get; set; }
+
+        public enum SecurityLevel
+        {
+            Low,
+            Medium,
+            High
+        }
     }
 }

@@ -20,27 +20,23 @@ namespace Dierentuin42.Controllers
             _context = context;
         }
 
-        // GET: Categories
+        // GET: Categories (ZOEKEN EN FILTEREN)
         public async Task<IActionResult> Index(string searchText, string filterName)
         {
             var categoriesQuery = _context.Category.AsQueryable();
 
-            // Zoekfunctionaliteit
             if (!string.IsNullOrEmpty(searchText))
             {
                 categoriesQuery = categoriesQuery.Where(c => c.Name.Contains(searchText));
             }
 
-            // Filter op Naam
             if (!string.IsNullOrEmpty(filterName))
             {
                 categoriesQuery = categoriesQuery.Where(c => c.Name == filterName);
             }
 
-            // Haal alle categorieën op
             var categories = await categoriesQuery.ToListAsync();
 
-            // Zet de ViewData voor filteren
             ViewData["CategoryNames"] = await _context.Category
                 .Select(c => c.Name)
                 .Distinct()
@@ -262,5 +258,6 @@ namespace Dierentuin42.Controllers
         {
             return _context.Category.Any(e => e.Id == id);
         }
+
     }
 }

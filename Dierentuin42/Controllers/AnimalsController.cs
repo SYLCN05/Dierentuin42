@@ -22,29 +22,41 @@ namespace Dierentuin42.Controllers
         }
 
         // GET: Animals (FILTERS/SORTEREN)
-        public async Task<IActionResult> Index(string filterName, string filterSpecies, string filterCategory,
-            string filterSize, string filterDiet, string filterActivityPattern, string filterPrey,
-            string filterEnclosure, string filterSecurity, string sortColumn, string sortOrder)
+        public async Task<IActionResult> Index(
+    string searchText,
+    string filterName,
+    string filterSpecies,
+    string filterCategory,
+    string filterSize,
+    string filterDiet,
+    string filterActivityPattern,
+    string filterPrey,
+    string filterEnclosure,
+    string filterSecurity,
+    string sortColumn,
+    string sortOrder)
         {
-            var animals = _context.Animal.Include(a => a.Category).Include(a => a.Enclosure).AsQueryable();
+            var animals = _context.Animal
+                .Include(a => a.Category)
+                .Include(a => a.Enclosure)
+                .AsQueryable();
 
-            // FILTEREN
+            // FILTEREN OP SPECIFIEKE VELDEN
             if (!string.IsNullOrEmpty(filterName))
             {
-                animals = animals.Where(a => a.Name.Contains(filterName));
+                animals = animals.Where(a => a.Name.Equals(filterName));
             }
 
             if (!string.IsNullOrEmpty(filterSpecies))
             {
-                animals = animals.Where(a => a.Species.Contains(filterSpecies));
+                animals = animals.Where(a => a.Species.Equals(filterSpecies));
             }
 
             if (!string.IsNullOrEmpty(filterCategory))
             {
-                animals = animals.Where(a => a.Category.Name.Contains(filterCategory));
+                animals = animals.Where(a => a.Category.Name.Equals(filterCategory));
             }
 
-            // FILTERS VOOR ELK VELD
             if (!string.IsNullOrEmpty(filterSize) && Enum.TryParse(filterSize, out Animal.Size size))
             {
                 animals = animals.Where(a => a.AnimalSize == size);
@@ -60,20 +72,63 @@ namespace Dierentuin42.Controllers
                 animals = animals.Where(a => a.AnimalActivityPattern == activity);
             }
 
-            if (!string.IsNullOrEmpty(filterPrey))
-            {
-                animals = animals.Where(a => a.Prey.Contains(filterPrey));
-            }
-
-            if (!string.IsNullOrEmpty(filterEnclosure))
-            {
-                animals = animals.Where(a => a.Enclosure.Name.Contains(filterEnclosure));
-            }
-
             if (!string.IsNullOrEmpty(filterSecurity) && Enum.TryParse(filterSecurity, out Animal.SecurityLevel security))
             {
                 animals = animals.Where(a => a.SecurityRequirement == security);
             }
+
+            if (!string.IsNullOrEmpty(filterPrey))
+            {
+                animals = animals.Where(a => a.Prey.Equals(filterPrey));
+            }
+
+            if (!string.IsNullOrEmpty(filterEnclosure))
+            {
+                animals = animals.Where(a => a.Enclosure.Name.Equals(filterEnclosure));
+            }
+
+            // ZOEKEN OP MEERDER VELDEN GELIJKTIJDIG
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                Animal.ActivityPattern? activityPattern = null;
+                Animal.SecurityLevel? securityLevel = null;
+                Animal.DietaryClass? dietaryClass = null;
+                Animal.Size? animalSize = null;  
+
+                if (Enum.TryParse(searchText, out Animal.ActivityPattern parsedActivityPattern))
+                {
+                    activityPattern = parsedActivityPattern;
+                }
+
+                if (Enum.TryParse(searchText, out Animal.SecurityLevel parsedSecurityLevel))
+                {
+                    securityLevel = parsedSecurityLevel;
+                }
+
+                if (Enum.TryParse(searchText, out Animal.DietaryClass parsedDietaryClass))
+                {
+                    dietaryClass = parsedDietaryClass;
+                }
+
+                if (Enum.TryParse(searchText, out Animal.Size parsedSize))
+                {
+                    animalSize = parsedSize;  
+                }
+
+                animals = animals.Where(a =>
+                    a.Name.Contains(searchText) ||
+                    a.Species.Contains(searchText) ||
+                    a.Prey.Contains(searchText) ||
+                    a.Category.Name.Contains(searchText) ||
+                    a.Enclosure.Name.Contains(searchText) ||
+
+                    (activityPattern.HasValue && a.AnimalActivityPattern == activityPattern.Value) ||
+                    (securityLevel.HasValue && a.SecurityRequirement == securityLevel.Value) ||
+                    (dietaryClass.HasValue && a.AnimalDiet == dietaryClass.Value) ||
+                    (animalSize.HasValue && a.AnimalSize == animalSize.Value) 
+                );
+            }
+
 
             // SORTEREN
             if (!string.IsNullOrEmpty(sortColumn))
@@ -98,6 +153,7 @@ namespace Dierentuin42.Controllers
             // GEEF TERUG
             return View(await animals.ToListAsync());
         }
+
 
 
 
@@ -241,21 +297,6 @@ namespace Dierentuin42.Controllers
         {
             return _context.Animal.Any(e => e.Id == id);
         }
-
-        // Get: Animals/SearchView
-        public async Task<IActionResult>Search() 
-        {
-        
-            return View();
-        }
-
-        // POST: Animals/SearchResult
-        public async Task<IActionResult> SearchResults(String SearchNaam)
-        {
-
-            return View("Index", await _context.Animal.Where(s => s.Name.Equals(SearchNaam)).ToListAsync());
-        }
-
 
     }
 }

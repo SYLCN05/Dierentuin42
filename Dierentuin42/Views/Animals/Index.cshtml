@@ -20,6 +20,22 @@
             <div class="col-12">
                 <div class="card shadow-lg border-0 rounded-3">
                     <div class="card-body p-4">
+                        <!-- ZOEK FUNCTIE -->
+                        <form method="get" asp-action="Index">
+                            <!-- Zoeken op alle eigenschappen van het dier -->
+                            <div class="row mb-4">
+                                <div class="col-md-10">
+                                    <!-- Gebruik de query string waarde voor 'searchText' -->
+                                    <input type="text" class="form-control" name="searchText" placeholder="Zoek op naam, soort, categorie, grootte, dieet, activiteitspatroon, prooi, verblijf, veiligheidsvereisten..." value="@Context.Request.Query["searchText"]">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Zoeken</button>
+                                </div>
+                            </div>
+                        </form>
+
+
+                        <!-- TABEL DIEREN -->
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped table-sm">
                                 <thead class="thead-dark">

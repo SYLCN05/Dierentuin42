@@ -21,10 +21,34 @@ namespace Dierentuin42.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchText, string filterName)
         {
-            return View(await _context.Category.ToListAsync());
+            var categoriesQuery = _context.Category.AsQueryable();
+
+            // Zoekfunctionaliteit
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                categoriesQuery = categoriesQuery.Where(c => c.Name.Contains(searchText));
+            }
+
+            // Filter op Naam
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                categoriesQuery = categoriesQuery.Where(c => c.Name == filterName);
+            }
+
+            // Haal alle categorieën op
+            var categories = await categoriesQuery.ToListAsync();
+
+            // Zet de ViewData voor filteren
+            ViewData["CategoryNames"] = await _context.Category
+                .Select(c => c.Name)
+                .Distinct()
+                .ToListAsync();
+
+            return View(categories);
         }
+
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)

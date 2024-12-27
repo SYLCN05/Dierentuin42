@@ -1,65 +1,263 @@
 ﻿@model IEnumerable<Dierentuin42.Models.Enclosure>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Verblijven Overzicht";
 }
 
-<h1>Verblijven</h1>
+<h1 class="text-center text-primary my-4 display-3 font-weight-bold">Verblijven Overzicht</h1>
 
-<p>
-    <a asp-action="Create">Creëer een nieuwe categorie</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(Model => Model.Zoo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EnclosureClimate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EnclosureHabitatType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EnclosureSecurityLevel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Size)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Zoo.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EnclosureClimate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EnclosureHabitatType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EnclosureSecurityLevel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Size)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<!-- NIEUW VERBLIJF CREEREN -->
+<div class="text-center mb-4">
+    <a class="btn btn-primary btn-lg px-5 py-3 shadow-sm" asp-action="Create">
+        <i class="fas fa-plus-circle"></i> Nieuw Verblijf Creëren
+    </a>
+</div>
+
+<!-- ZOEK FUNCTIE EN FILTERS + TABEL IN ÉÉN ENKEL CONTAINER -->
+<div class="container">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body p-4">
+
+            <form method="get" asp-action="Index">
+                <div class="row justify-content-center">
+                    <div class="col-12 mb-4">
+                        <div class="row">
+                            <div class="col-12 col-md-10">
+                                <input type="text" class="form-control" name="searchText" placeholder="Zoek op naam, dierentuin, klimaat, habitat type, veiligheidsniveau, grootte..." value="@Context.Request.Query["searchText"]">
+                            </div>
+                            <div class="col-12 col-md-2 mt-2 mt-md-0">
+                                <button type="submit" class="btn btn-primary w-100">Zoeken</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABEL VERBLIJVEN -->
+                <div class="table-responsive mt-4">
+                    <table class="table table-bordered table-striped table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">
+                                    Naam
+                                    <select class="form-control form-control-sm mt-2" name="filterName">
+                                        <option value="">Filter</option>
+                                        @foreach (var name in ViewData["Names"] as List<string>)
+                                        {
+                                            <option value="@name">@name</option>
+                                        }
+                                    </select>
+                                </th>
+                                <th scope="col">
+                                    Dierentuin
+                                    <select class="form-control form-control-sm mt-2" name="filterZoo">
+                                        <option value="">Filter</option>
+                                        @foreach (var zoo in ViewData["Zoos"] as List<Dierentuin42.Models.Zoo>)
+                                        {
+                                            <option value="@zoo.Name">@zoo.Name</option>
+                                        }
+                                    </select>
+                                </th>
+                                <th scope="col">
+                                    Klimaat
+                                    <select class="form-control form-control-sm mt-2" name="filterClimate">
+                                        <option value="">Filter</option>
+                                        @foreach (var climate in ViewData["Climates"] as List<Enclosure.Climate>)
+                                        {
+                                            <option value="@climate">@climate</option>
+                                        }
+                                    </select>
+                                </th>
+                                <th scope="col">
+                                    Habitat Type
+                                    <select class="form-control form-control-sm mt-2" name="filterHabitatType">
+                                        <option value="">Filter</option>
+                                        @foreach (var habitat in ViewData["HabitatTypes"] as List<Enclosure.HabitatType>)
+                                        {
+                                            <option value="@habitat">@habitat</option>
+                                        }
+                                    </select>
+                                </th>
+                                <th scope="col">
+                                    Veiligheidsniveau
+                                    <select class="form-control form-control-sm mt-2" name="filterSecurityLevel">
+                                        <option value="">Filter</option>
+                                        @foreach (var level in ViewData["SecurityLevels"] as List<Enclosure.SecurityLevel>)
+                                        {
+                                            <option value="@level">@level</option>
+                                        }
+                                    </select>
+                                </th>
+                                <th scope="col">
+                                    Grootte (m²)
+                                    <select class="form-control form-control-sm mt-2" name="filterSize">
+                                        <option value="">Filter</option>
+                                        @foreach (var size in ViewData["Sizes"] as List<double>)
+                                        {
+                                            <option value="@size">@size m²</option>
+                                        }
+                                    </select>
+                                </th>
+                                <th scope="col" class="actionsColumn">
+                                    Acties
+                                    <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Toepassen</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Zoo.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.EnclosureClimate)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.EnclosureHabitatType)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.EnclosureSecurityLevel)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Size)</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn btn-warning btn-sm mx-2 shadow-sm" asp-action="Edit" asp-route-id="@item.Id" title="Bewerk Verblijf">
+                                                <i class="fas fa-edit"></i> Bewerk
+                                            </a>
+                                            <a class="btn btn-info btn-sm mx-2 shadow-sm" asp-action="Details" asp-route-id="@item.Id" title="Bekijk Details">
+                                                <i class="fas fa-info-circle"></i> Details
+                                            </a>
+                                            <a class="btn btn-danger btn-sm mx-2 shadow-sm" asp-action="Delete" asp-route-id="@item.Id" title="Verwijder Verblijf">
+                                                <i class="fas fa-trash-alt"></i> Verwijder
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    body {
+        background-color: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #003366;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+        margin-top: 30px;
+        max-width: 100%;
+    }
+
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .btn {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-radius: 5px;
+        padding: 12px 24px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+            transform: scale(1.05);
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            transform: scale(1.05);
+        }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+            transform: scale(1.05);
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: scale(1.05);
+        }
+
+    .d-flex a {
+        font-size: 12px;
+        padding: 8px 12px;
+        margin: 0 5px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th,
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            word-wrap: break-word;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .thead-dark th {
+        background-color: #343a40;
+        color: #fff;
+    }
+    .actionsColumn {
+        width: 250px
+    }
+</style>

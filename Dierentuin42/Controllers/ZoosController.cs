@@ -20,11 +20,20 @@ namespace Dierentuin42.Controllers
             _context = context;
         }
 
-        // GET: Zoos
-        public async Task<IActionResult> Index()
+        // GET: Zoos (ZOEKEN)
+        public async Task<IActionResult> Index(string searchText)
         {
-            return View(await _context.Zoo.ToListAsync());
+            var zoos = _context.Zoo.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                zoos = zoos.Where(z => z.Name.Contains(searchText));
+            }
+
+            return View(await zoos.ToListAsync());
         }
+
+
 
         // GET: Zoos/Details/5
         public async Task<IActionResult> Details(int? id)

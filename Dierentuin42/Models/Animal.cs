@@ -9,15 +9,18 @@ namespace Dierentuin42.Models
         public int Id { get; set; }
 
 
-
+        [Required(ErrorMessage ="Naam is verplicht")]
+        [StringLength(20, ErrorMessage = "Naam mag niet langer zijn dan 20 tekens")]
         [Display(Name = "Naam")]
         public string Name { get; set; }
 
 
-
+        [Required(ErrorMessage = "Soort is verplicht.")]
+        [StringLength(20, ErrorMessage = "Soort mag niet langer zijn dan 20 tekens.")]
         [Display(Name = "Soort")]
         public string Species { get; set; }
 
+        [Display(Name = "Categorie")]
         public int? CategoryId { get; set; }
 
         [Display(Name = "Categorie")]
@@ -35,8 +38,10 @@ namespace Dierentuin42.Models
             VeryLarge
 
         }
-        [Display(Name = "Grootte van het dier")]
-        public Size AnimalSize { get; set; }
+
+        [Required(ErrorMessage = "Grootte van het dier is verplicht.")]
+        [Display(Name = "Grootte")]
+        public Size? AnimalSize { get; set; }
 
         public enum DietaryClass
         {
@@ -46,8 +51,10 @@ namespace Dierentuin42.Models
             Insectivore,
             Piscivore
         }
+
+        [Required(ErrorMessage = "Dieet is verplicht.")]
         [Display(Name = "Dieet")]
-        public DietaryClass AnimalDiet { get; set; }
+        public DietaryClass? AnimalDiet { get; set; }
 
         public enum ActivityPattern
         {
@@ -55,12 +62,17 @@ namespace Dierentuin42.Models
             Nocturnal,
             Cathemeral
         }
-        [Display(Name = "Activiteits patroon")]
-        public ActivityPattern AnimalActivityPattern { get; set; }
 
+        [Required(ErrorMessage = "Activiteits patroon is verplicht.")]
+        [Display(Name = "Activiteitspatroon")]
+        public ActivityPattern? AnimalActivityPattern { get; set; }
+
+        [Required(ErrorMessage = "Prooi is verplicht.")]
+        [StringLength(20, ErrorMessage = "Prooi naam mag niet langer zijn dan 20 tekens.")]
         [Display(Name = "Prooi")]
         public string Prey { get; set; }
 
+        [Display(Name = "Verblijf")]
         public int? EnclosureId { get; set; }
 
         [Display(Name = "Verblijf")]
@@ -80,15 +92,22 @@ namespace Dierentuin42.Models
                     Size.Medium => SpaceRequirements.Medium,
                     Size.Large => SpaceRequirements.Large,
                     Size.VeryLarge => SpaceRequirements.VeryLarge,
-                    _ => 10.0                 // default ruimte
+                    _ => 10.0                 
                 };
 
 
             }
         }
 
-        [Display(Name = "VeiligheidsVereisten")]
-        public SecurityLevel SecurityRequirement { get; set; }
+        [Required(ErrorMessage = "Veiligheidsvereisten zijn verplicht.")]
+        [Display(Name = "Veiligheidsvereisten")]
+        public SecurityLevel? SecurityRequirement { get; set; }
 
+        public enum SecurityLevel
+        {
+            Low,
+            Medium,
+            High
+        }
     }
 }

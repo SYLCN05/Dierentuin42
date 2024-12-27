@@ -20,11 +20,31 @@ namespace Dierentuin42.Controllers
             _context = context;
         }
 
-        // GET: Categories
-        public async Task<IActionResult> Index()
+        // GET: Categories (ZOEKEN EN FILTEREN)
+        public async Task<IActionResult> Index(string searchText, string filterName)
         {
-            return View(await _context.Category.ToListAsync());
+            var categoriesQuery = _context.Category.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                categoriesQuery = categoriesQuery.Where(c => c.Name.Contains(searchText));
+            }
+
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                categoriesQuery = categoriesQuery.Where(c => c.Name == filterName);
+            }
+
+            var categories = await categoriesQuery.ToListAsync();
+
+            ViewData["CategoryNames"] = await _context.Category
+                .Select(c => c.Name)
+                .Distinct()
+                .ToListAsync();
+
+            return View(categories);
         }
+
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -238,5 +258,6 @@ namespace Dierentuin42.Controllers
         {
             return _context.Category.Any(e => e.Id == id);
         }
+
     }
 }

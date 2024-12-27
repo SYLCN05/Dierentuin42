@@ -29,7 +29,7 @@ namespace Dierentuin42.Controllers.Api
             return Ok(result);
         }
 
-        // GET: api/animals/5
+        // GET: api/animals/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Animal>> GetAnimal(int id)
         {
@@ -39,8 +39,9 @@ namespace Dierentuin42.Controllers.Api
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (animal == null)
+            {
                 return NotFound();
-
+            }
             return Ok(animal);
         }
 
@@ -49,8 +50,9 @@ namespace Dierentuin42.Controllers.Api
         public async Task<ActionResult<Animal>> CreateAnimal(Animal animal)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
-
+            }
             _context.Add(animal);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetAnimal), new { id = animal.Id }, animal);
@@ -61,11 +63,13 @@ namespace Dierentuin42.Controllers.Api
         public async Task<IActionResult> UpdateAnimal(int id, Animal animal)
         {
             if (id != animal.Id)
+            {
                 return BadRequest();
-
+            }
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
-
+            }
             try
             {
                 _context.Update(animal);
@@ -87,8 +91,9 @@ namespace Dierentuin42.Controllers.Api
         {
             var animal = await _context.Animal.FindAsync(id);
             if (animal == null)
+            {
                 return NotFound();
-
+            }
             _context.Animal.Remove(animal);
             await _context.SaveChangesAsync();
             return NoContent();

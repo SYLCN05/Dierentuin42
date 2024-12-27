@@ -93,7 +93,7 @@ namespace Dierentuin42.Controllers
                 Animal.ActivityPattern? activityPattern = null;
                 Animal.SecurityLevel? securityLevel = null;
                 Animal.DietaryClass? dietaryClass = null;
-                Animal.Size? animalSize = null;  
+                Animal.Size? animalSize = null;
 
                 if (Enum.TryParse(searchText, out Animal.ActivityPattern parsedActivityPattern))
                 {
@@ -112,7 +112,7 @@ namespace Dierentuin42.Controllers
 
                 if (Enum.TryParse(searchText, out Animal.Size parsedSize))
                 {
-                    animalSize = parsedSize;  
+                    animalSize = parsedSize;
                 }
 
                 animals = animals.Where(a =>
@@ -125,7 +125,7 @@ namespace Dierentuin42.Controllers
                     (activityPattern.HasValue && a.AnimalActivityPattern == activityPattern.Value) ||
                     (securityLevel.HasValue && a.SecurityRequirement == securityLevel.Value) ||
                     (dietaryClass.HasValue && a.AnimalDiet == dietaryClass.Value) ||
-                    (animalSize.HasValue && a.AnimalSize == animalSize.Value) 
+                    (animalSize.HasValue && a.AnimalSize == animalSize.Value)
                 );
             }
 

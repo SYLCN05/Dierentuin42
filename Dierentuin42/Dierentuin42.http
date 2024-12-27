@@ -23,7 +23,7 @@ POST {{Dierentuin42_HostAddress}}/api/animals
 Content-Type: application/json
 
 {
-    "name": "Leo",
+    "name": "Leotest",
     "species": "Lion",
     "categoryId": 3,
     "animalSize": 1,
@@ -36,11 +36,11 @@ Content-Type: application/json
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals/15
+GET {{Dierentuin42_HostAddress}}/api/animals/16
 
 ###
 
-DELETE {{Dierentuin42_HostAddress}}/api/animals/15
+DELETE {{Dierentuin42_HostAddress}}/api/animals/22
 
 ###
 
@@ -62,6 +62,24 @@ Content-Type: application/json
   "enclosureId": 3,
   "spaceRequirement": 0.01,
   "spaceRequirement": 1
+}
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/categories
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/categories/3
+
+###
+
+POST {{Dierentuin42_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Checkenofapiwerkt",
+  "animals": []
 }
 
 ###

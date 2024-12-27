@@ -218,12 +218,13 @@ namespace Dierentuin42.Controllers
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Selected = enclosure.Animals.Any(animal => animal.Id == a.Id)
+                    Selected = enclosure.Animals.Any(animal => animal.Id == a.Id) // Selecteer dieren die al gekoppeld zijn
                 })
                 .ToList();
 
             return View(enclosure);
         }
+
 
         // POST: Enclosures/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -251,8 +252,12 @@ namespace Dierentuin42.Controllers
                         return NotFound();
                     }
 
-                    // Update de enclosure-eigenschappen
+                    // Werk de bestaande enclosure bij
                     existingEnclosure.Name = enclosure.Name;
+                    existingEnclosure.EnclosureClimate = enclosure.EnclosureClimate;
+                    existingEnclosure.EnclosureHabitatType = enclosure.EnclosureHabitatType;
+                    existingEnclosure.EnclosureSecurityLevel = enclosure.EnclosureSecurityLevel;
+                    existingEnclosure.Size = enclosure.Size;
 
                     // Werk de dieren bij
                     existingEnclosure.Animals.Clear();
@@ -263,7 +268,7 @@ namespace Dierentuin42.Controllers
                             var animal = await _context.Animal.FindAsync(animalId);
                             if (animal != null)
                             {
-                                existingEnclosure.Animals.Add(animal);
+                                existingEnclosure.Animals.Add(animal); // Voeg de geselecteerde dieren toe
                             }
                         }
                     }
@@ -291,15 +296,16 @@ namespace Dierentuin42.Controllers
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Selected = selectedAnimalIds.Contains(a.Id)
+                    Selected = selectedAnimalIds.Contains(a.Id) // Markeer geselecteerde dieren
                 })
                 .ToList();
 
             return View(enclosure);
         }
 
-            // GET: Enclosures/Delete/5
-            public async Task<IActionResult> Delete(int? id)
+
+        // GET: Enclosures/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {

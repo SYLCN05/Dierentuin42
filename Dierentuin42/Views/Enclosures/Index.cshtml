@@ -18,12 +18,10 @@
     <div class="card shadow-lg border-0 rounded-3">
         <div class="card-body p-4">
 
-            <!-- Zoeken op naam van het verblijf of dierentuin -->
             <form method="get" asp-action="Index">
                 <div class="row justify-content-center">
                     <div class="col-12 mb-4">
                         <div class="row">
-                            <!-- Zoeken input en zoekknop samen laten uitrekken -->
                             <div class="col-12 col-md-10">
                                 <input type="text" class="form-control" name="searchText" placeholder="Zoek op naam, dierentuin, klimaat, habitat type, veiligheidsniveau, grootte..." value="@Context.Request.Query["searchText"]">
                             </div>
@@ -99,7 +97,7 @@
                                         }
                                     </select>
                                 </th>
-                                <th scope="col">
+                                <th scope="col" class="actionsColumn">
                                     Acties
                                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Toepassen</button>
                                 </th>
@@ -258,5 +256,8 @@
     .thead-dark th {
         background-color: #343a40;
         color: #fff;
+    }
+    .actionsColumn {
+        width: 250px
     }
 </style>

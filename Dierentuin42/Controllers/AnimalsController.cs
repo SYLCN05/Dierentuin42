@@ -175,13 +175,24 @@ namespace Dierentuin42.Controllers
             return View();
         }
 
-        // POST: Animals/SearchResult
         public async Task<IActionResult> SearchResults(String SearchNaam)
         {
 
             return View("Index", await _context.Animal.Where(s => s.Name.Equals(SearchNaam)).ToListAsync());
         }
 
+        public async Task<IActionResult> Sunrise()
+        {
+            var animals = await _context.Animal.ToListAsync();
+            var awakeAnimals = animals.Where(a => a.IsAwake(true)).ToList();
+            return View("Index", awakeAnimals);
+        }
 
+        public async Task<IActionResult> Sunset()
+        {
+            var animals = await _context.Animal.ToListAsync();
+            var awakeAnimals = animals.Where(a => a.IsAwake(false)).ToList();
+            return View("Index", awakeAnimals);
+        }
     }
 }

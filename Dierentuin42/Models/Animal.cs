@@ -87,6 +87,17 @@ namespace Dierentuin42.Models
             }
         }
 
+        public bool IsAwake(bool isSunrise)
+        {
+            return AnimalActivityPattern switch
+            {
+                ActivityPattern.Diurnal => isSunrise,
+                ActivityPattern.Nocturnal => !isSunrise,
+                ActivityPattern.Cathemeral => true,
+                _ => false
+            };
+        }
+
         [Display(Name = "VeiligheidsVereisten")]
         public SecurityLevel SecurityRequirement { get; set; }
 

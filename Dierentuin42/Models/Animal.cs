@@ -1,19 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static Dierentuin42.Models.Enclosure;
 
-
 namespace Dierentuin42.Models
 {
     public class Animal
     {
         public int Id { get; set; }
 
-
-
         [Display(Name = "Naam")]
         public string Name { get; set; }
-
-
 
         [Display(Name = "Soort")]
         public string Species { get; set; }
@@ -23,8 +18,6 @@ namespace Dierentuin42.Models
         [Display(Name = "Categorie")]
         public Category? Category { get; set; }
 
-
-
         public enum Size
         {
             Microscopic,
@@ -33,8 +26,8 @@ namespace Dierentuin42.Models
             Medium,
             Large,
             VeryLarge
-
         }
+
         [Display(Name = "Grootte van het dier")]
         public Size AnimalSize { get; set; }
 
@@ -46,6 +39,7 @@ namespace Dierentuin42.Models
             Insectivore,
             Piscivore
         }
+
         [Display(Name = "Dieet")]
         public DietaryClass AnimalDiet { get; set; }
 
@@ -55,6 +49,7 @@ namespace Dierentuin42.Models
             Nocturnal,
             Cathemeral
         }
+
         [Display(Name = "Activiteits patroon")]
         public ActivityPattern AnimalActivityPattern { get; set; }
 
@@ -80,10 +75,8 @@ namespace Dierentuin42.Models
                     Size.Medium => SpaceRequirements.Medium,
                     Size.Large => SpaceRequirements.Large,
                     Size.VeryLarge => SpaceRequirements.VeryLarge,
-                    _ => 10.0                 // default ruimte
+                    _ => 10.0
                 };
-
-
             }
         }
 
@@ -100,6 +93,27 @@ namespace Dierentuin42.Models
 
         [Display(Name = "VeiligheidsVereisten")]
         public SecurityLevel SecurityRequirement { get; set; }
+
+        public string GetFeedingTime()
+        {
+            Console.WriteLine($"Dier: {Name}, Voedsel: {Prey}, Dieet: {AnimalDiet}");
+
+            if (!string.IsNullOrEmpty(Prey))
+            {
+                return $"Eet {Prey}.";
+            }
+
+            return AnimalDiet switch
+            {
+                DietaryClass.Carnivore => "Eet vlees.",
+                DietaryClass.Herbivore => "Eet planten.",
+                DietaryClass.Omnivore => "Eet zowel planten als vlees.",
+                DietaryClass.Insectivore => "Eet insecten.",
+                DietaryClass.Piscivore => "Eet vis.",
+                _ => "Geen specifiek dieet."
+            };
+        }
+
 
     }
 }

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Feeding Time - " + ViewBag.Action;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Naam</th>
+            <th>Prooi</th>
+            <th>Dieet</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var feedingTime in Model)
+        {
+            <tr>
+                <td>@feedingTime.Animal</td> 
+                <td>@feedingTime.Prey</td> 
+                <td>@feedingTime.FeedingTime</td> 
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Debug Output:</h3>
+<ul>
+    @foreach (var feedingTime in Model)
+    {
+        <li>Animal: @feedingTime.Animal, Prey: @feedingTime.Prey, FeedingTime: @feedingTime.FeedingTime</li>
+    }
+</ul>

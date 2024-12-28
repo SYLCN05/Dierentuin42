@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Dierentuin42.Models.Animal>
+
+@{
+    ViewData["Title"] = "Dierenstatus - " + ViewBag.Action;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Naam</th>
+            <th>Soort</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Species</td>
+                <td>
+                    @if (item.AnimalActivityPattern == Dierentuin42.Models.Animal.ActivityPattern.Cathemeral)
+                    {
+                        <span>Altijd actief</span>
+                    }
+                    else if (ViewBag.Action == "Sunrise" && item.AnimalActivityPattern == Dierentuin42.Models.Animal.ActivityPattern.Diurnal)
+                    {
+                        <span>Wakker</span>
+                    }
+                    else if (ViewBag.Action == "Sunset" && item.AnimalActivityPattern == Dierentuin42.Models.Animal.ActivityPattern.Nocturnal)
+                    {
+                        <span>Wakker</span>
+                    }
+                    else
+                    {
+                        <span>Slapend</span>
+                    }
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>

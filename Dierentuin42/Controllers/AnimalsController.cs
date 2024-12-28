@@ -168,7 +168,6 @@ namespace Dierentuin42.Controllers
             return _context.Animal.Any(e => e.Id == id);
         }
 
-        // Get: Animals/SearchView
         public async Task<IActionResult>Search() 
         {
         

@@ -58,7 +58,7 @@ namespace Dierentuin42.Controllers.Api
             return CreatedAtAction(nameof(GetAnimal), new { id = animal.Id }, animal);
         }
 
-        // PUT: api/animals/5
+        // PUT: api/animals/id
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAnimal(int id, Animal animal)
         {
@@ -78,14 +78,17 @@ namespace Dierentuin42.Controllers.Api
             catch (DbUpdateConcurrencyException)
             {
                 if (!await AnimalExists(id))
+                {
                     return NotFound();
+                }
+                   
                 throw;
             }
 
             return NoContent();
         }
 
-        // DELETE: api/animals/5
+        // DELETE: api/animals/id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnimal(int id)
         {

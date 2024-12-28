@@ -23,7 +23,7 @@ POST {{Dierentuin42_HostAddress}}/api/animals
 Content-Type: application/json
 
 {
-    "name": "Leotest",
+    "name": "Leotest123",
     "species": "Lion",
     "categoryId": 3,
     "animalSize": 1,
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals/16
+GET {{Dierentuin42_HostAddress}}/api/animals/17
 
 ###
 
@@ -48,20 +48,21 @@ GET {{Dierentuin42_HostAddress}}/api/animals/search?name=Relatietest
 
 ###
 
-PUT {{Dierentuin42_HostAddress}}/api/animals/0
+PUT {{Dierentuin42_HostAddress}}/api/animals/17
 Content-Type: application/json
 
 {
-  "name": "testnameveranderdtest",
-  "species": "Chimpanseeveranderttest",
+  "id": 17,
+  "name": "123testna",
+  "species": "Chimpansee",
   "categoryId": 3,
-  "animalSize": 1,
+  "animalSize": 2,
   "animalDiet": 1,
   "animalActivityPattern": 2,
-  "prey": "patates",
+  "prey": "123patates",
   "enclosureId": 3,
   "spaceRequirement": 0.01,
-  "spaceRequirement": 1
+  "securityRequirement": 1
 }
 
 ###
@@ -70,7 +71,7 @@ GET {{Dierentuin42_HostAddress}}/api/categories
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/categories/3
+GET {{Dierentuin42_HostAddress}}/api/categories/26
 
 ###
 
@@ -78,8 +79,27 @@ POST {{Dierentuin42_HostAddress}}/api/categories
 Content-Type: application/json
 
 {
-  "name": "Checkenofapiwerkt",
+  "name": "Checkenofapiwerkt2",
   "animals": []
 }
+
+###
+
+PUT {{Dierentuin42_HostAddress}}/api/categories/3
+Content-Type: application/json
+
+{
+  "id": 3,
+  "name": "Checkenofapikanaanpassen3",
+  "animals": []
+}
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/categories/
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/categories/search?name=testnameveranderdtest
 
 ###

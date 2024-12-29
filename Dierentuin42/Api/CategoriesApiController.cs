@@ -10,12 +10,10 @@ namespace Dierentuin42.Api
     [ApiController]
     public class CategoriesApiController : ControllerBase
     {
-        private readonly CategoriesController _webcontroller;
         private readonly Dierentuin42Context _context;
         public CategoriesApiController(Dierentuin42Context context)
         {
             _context = context;
-            _webcontroller = new CategoriesController(context);
         }
 
         //: Get api/categories

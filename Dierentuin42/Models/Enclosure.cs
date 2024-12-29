@@ -46,17 +46,17 @@ namespace Dierentuin42.Models
 
         [Required(ErrorMessage = "Klimaat is verplicht.")]
         [Display(Name = "Klimaat")]
-        public Climate EnclosureClimate { get; set; }
+        public Climate? EnclosureClimate { get; set; }
 
         [Required(ErrorMessage = "Habitat type is verplicht.")]
         [Display(Name = "Habitat Type")] 
-        public HabitatType EnclosureHabitatType { get; set; }
+        public HabitatType? EnclosureHabitatType { get; set; }
 
         [Required(ErrorMessage = "Veiligheidsniveau is verplicht.")]
         [Display(Name = "Veiligheidsniveau")]
-        public SecurityLevel EnclosureSecurityLevel { get; set; }
+        public SecurityLevel? EnclosureSecurityLevel { get; set; }
 
-        [Range(0.01, 1000.0, ErrorMessage = "Grootte moet tussen 0,01 en 1000 m² liggen.")]
+        [Range(1.0, 10000.0, ErrorMessage = "Grootte moet tussen 0,01 en 1000 m² liggen.")]
         [Display(Name = "Grootte (m²)")]
         public double Size { get; set; }
     }

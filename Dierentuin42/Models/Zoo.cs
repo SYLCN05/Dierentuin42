@@ -8,7 +8,7 @@ namespace Dierentuin42.Models
 
         [Required(ErrorMessage = "Dierentuin naam is verplicht.")]
         [StringLength(30, ErrorMessage = "Dierentuin naam mag niet langer zijn dan 30 tekens.")]
-        [Display(Name = "Dierentuin naam")]
+        [Display(Name = "Naam")]
         public string Name { get; set; }
 
         [Display(Name = "Verblijf/verblijven:")]

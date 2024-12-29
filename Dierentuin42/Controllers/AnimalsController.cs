@@ -32,6 +32,7 @@ namespace Dierentuin42.Controllers
     string filterActivityPattern,
     string filterPrey,
     string filterEnclosure,
+    string filterSpaceRequirement,
     string filterSecurity,
     string sortColumn,
     string sortOrder)
@@ -72,6 +73,14 @@ namespace Dierentuin42.Controllers
                 animals = animals.Where(a => a.AnimalActivityPattern == activity);
             }
 
+            if (!string.IsNullOrEmpty(filterSpaceRequirement))
+            {
+                if (double.TryParse(filterSpaceRequirement, out double parsedSpaceRequirement))
+                {
+                    animals = animals.Where(a => a.spaceRequirement.Equals(parsedSpaceRequirement));
+                }
+            }
+
             if (!string.IsNullOrEmpty(filterSecurity) && Enum.TryParse(filterSecurity, out Animal.SecurityLevel security))
             {
                 animals = animals.Where(a => a.SecurityRequirement == security);
@@ -94,6 +103,7 @@ namespace Dierentuin42.Controllers
                 Animal.SecurityLevel? securityLevel = null;
                 Animal.DietaryClass? dietaryClass = null;
                 Animal.Size? animalSize = null;
+                double? spaceRequirement = null;
 
                 if (Enum.TryParse(searchText, out Animal.ActivityPattern parsedActivityPattern))
                 {
@@ -114,6 +124,10 @@ namespace Dierentuin42.Controllers
                 {
                     animalSize = parsedSize;
                 }
+                if (double.TryParse(searchText, out double parsedSpaceRequirement))
+                {
+                    spaceRequirement = parsedSpaceRequirement;
+                }
 
                 animals = animals.Where(a =>
                     a.Name.Contains(searchText) ||
@@ -125,7 +139,8 @@ namespace Dierentuin42.Controllers
                     (activityPattern.HasValue && a.AnimalActivityPattern == activityPattern.Value) ||
                     (securityLevel.HasValue && a.SecurityRequirement == securityLevel.Value) ||
                     (dietaryClass.HasValue && a.AnimalDiet == dietaryClass.Value) ||
-                    (animalSize.HasValue && a.AnimalSize == animalSize.Value)
+                    (animalSize.HasValue && a.AnimalSize == animalSize.Value) ||
+                    (spaceRequirement.HasValue && a.spaceRequirement >= spaceRequirement.Value)
                 );
             }
 
@@ -149,13 +164,12 @@ namespace Dierentuin42.Controllers
             ViewData["ActivityPatterns"] = Enum.GetValues(typeof(Animal.ActivityPattern)).Cast<Animal.ActivityPattern>().ToList();
             ViewData["Enclosures"] = await _context.Enclosure.Select(e => e.Name).Distinct().ToListAsync();
             ViewData["SecurityLevels"] = Enum.GetValues(typeof(Animal.SecurityLevel)).Cast<Animal.SecurityLevel>().ToList();
+            ViewData["SpaceRequirements"] = await _context.Animal.Select(a => a.spaceRequirement).Distinct().OrderBy(sr => sr).ToListAsync();
+
 
             // GEEF TERUG
             return View(await animals.ToListAsync());
         }
-
-
-
 
         // GET: Animals/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -190,7 +204,7 @@ namespace Dierentuin42.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement")] Animal animal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement, spaceRequirement")] Animal animal)
         {
             if (ModelState.IsValid)
             {
@@ -226,7 +240,7 @@ namespace Dierentuin42.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement")] Animal animal)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement, spaceRequirement")] Animal animal)
         {
             if (id != animal.Id)
             {

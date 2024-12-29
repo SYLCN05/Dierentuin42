@@ -16,7 +16,6 @@
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                    <!-- Form Fields -->
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
                         <input asp-for="Name" class="form-control" />
@@ -88,6 +87,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label asp-for="spaceRequirement" class="control-label"></label>
+                        <input asp-for="spaceRequirement" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="spaceRequirement" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
                         <label asp-for="SecurityRequirement" class="control-label"></label>
                         <select asp-for="SecurityRequirement" class="form-control">
                             <option value="">Selecteer Beveiliging</option>
@@ -101,7 +107,6 @@
 
                     <hr class="my-3" style="border: 0; border-top: 3px solid #007bff; margin: 5px 0;" />
 
-                    <!-- Knoppen -->
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-primary btn-lg shadow-lg d-flex justify-content-center align-items-center">
                             <i class="fas fa-save" style="margin-right: 8px;"></i> Creëer Dier

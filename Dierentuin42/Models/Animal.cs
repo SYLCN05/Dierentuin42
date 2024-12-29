@@ -78,7 +78,7 @@ namespace Dierentuin42.Models
         [Display(Name = "Verblijf")]
         public Enclosure? Enclosure { get; set; }
 
-        [Range(0.01, 100.0, ErrorMessage = "Voer een getal in tussen de 0,01 en 100,0")]
+        /*[Range(0.01, 100.0, ErrorMessage = "Voer een getal in tussen de 0,01 en 100,0")]
         [Display(Name = "Ruimtevereiste (m²)")]
         public double SpaceRequirement
         {
@@ -94,10 +94,14 @@ namespace Dierentuin42.Models
                     Size.VeryLarge => SpaceRequirements.VeryLarge,
                     _ => 10.0                 
                 };
-
-
             }
-        }
+        }*/
+
+        [Required(ErrorMessage = "Ruimtevereiste is verplicht.")]
+        [Range(1.0, 5000.0, ErrorMessage = "Voer een getal in tussen de 1 en 5000")]
+        [Display(Name = "Ruimtevereiste (m²)")]
+        public double spaceRequirement { get; set; }
+
 
         [Required(ErrorMessage = "Veiligheidsvereisten zijn verplicht.")]
         [Display(Name = "Veiligheidsvereisten")]

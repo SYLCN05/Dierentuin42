@@ -209,6 +209,7 @@ namespace Dierentuin42.Controllers
             }
 
             var zoo = await _context.Zoo
+                .Include(z => z.Enclosures)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (zoo == null)
             {
@@ -223,15 +224,24 @@ namespace Dierentuin42.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var zoo = await _context.Zoo.FindAsync(id);
+            var zoo = await _context.Zoo
+                .Include(z => z.Enclosures)  
+                .FirstOrDefaultAsync(z => z.Id == id);
+
             if (zoo != null)
             {
+                foreach (var enclosure in zoo.Enclosures)
+                {
+                    enclosure.ZooId = null;  
+                }
+
                 _context.Zoo.Remove(zoo);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool ZooExists(int id)
         {

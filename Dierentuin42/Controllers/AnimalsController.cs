@@ -208,14 +208,46 @@ namespace Dierentuin42.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(animal);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // VERKRIJGEN DETAILS VAN VERBLIJF
+                var enclosure = await _context.Enclosure
+                    .Where(e => e.Id == animal.EnclosureId)
+                    .FirstOrDefaultAsync();
+
+                if (enclosure != null)
+                {
+                    // BEREKENING VAN TOTALE RUIMTE DIE MOMENTEEL IN HET VERBLIJF WORDT INGENOMEN
+                    var totalSpaceOccupied = await _context.Animal
+                        .Where(a => a.EnclosureId == animal.EnclosureId)
+                        .SumAsync(a => a.spaceRequirement);
+
+                    // CONTROLE OF DE RESTERENDE RUIMTE VOLDOENDE IS VOOR HET NIEUWE DIER
+                    double remainingSpace = enclosure.Size - totalSpaceOccupied;
+
+                    if (remainingSpace >= animal.spaceRequirement)
+                    {
+                        // GENOEG RUIMTE, DUS KAN VERDER
+                        _context.Add(animal);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        // NIET GENOEG RUIMTE
+                        ModelState.AddModelError("spaceRequirement", "Te weinig ruimte in gekozen verblijf (beschikbaar: " + remainingSpace + "m²/" + enclosure.Size + "m²)");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("EnclosureId", "Geselecteerde verblijf niet gevonden");
+                }
             }
+
+            // ALS HET MODEL ONGELDIG IS OF ALS FOUT OPGETREDEN RETOURNEER DE WEERGAVE MET HUIDIGE MODEL
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id", animal.CategoryId);
             ViewData["EnclosureId"] = new SelectList(_context.Set<Enclosure>(), "Id", "Id", animal.EnclosureId);
             return View(animal);
         }
+
 
         // GET: Animals/Edit/5
         public async Task<IActionResult> Edit(int? id)

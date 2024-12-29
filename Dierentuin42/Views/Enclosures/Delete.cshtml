@@ -38,6 +38,17 @@
                             <td class="fw-bold">@Html.DisplayNameFor(model => model.Size)</td>
                             <td>@Html.DisplayFor(model => model.Size)</td>
                         </tr>
+                        <tr>
+                            <td class="fw-bold">Dieren in dit Verblijf</td>
+                            <td>
+                                <ul>
+                                    @foreach (var animal in Model.Animals)
+                                    {
+                                        <li>@animal.Name</li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 

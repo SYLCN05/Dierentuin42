@@ -230,7 +230,9 @@ namespace Dierentuin42.Controllers
             }
 
             var category = await _context.Category
+                .Include(c => c.Animals)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (category == null)
             {
                 return NotFound();
@@ -244,15 +246,24 @@ namespace Dierentuin42.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Category.FindAsync(id);
+            var category = await _context.Category
+                .Include(c => c.Animals)  
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (category != null)
             {
+                foreach (var animal in category.Animals)
+                {
+                    animal.CategoryId = null;  
+                }
+
                 _context.Category.Remove(category);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool CategoryExists(int id)
         {

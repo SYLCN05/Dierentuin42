@@ -9,13 +9,11 @@ namespace Dierentuin42.Controllers.Api
     [ApiController]
     public class AnimalsApiController : ControllerBase
     {
-        private readonly AnimalsController _webController;
         private readonly Dierentuin42Context _context;
 
         public AnimalsApiController(Dierentuin42Context context)
         {
             _context = context;
-            _webController = new AnimalsController(context);
         }
 
         // GET: api/animals

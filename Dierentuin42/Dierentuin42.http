@@ -11,7 +11,7 @@ GET {{Dierentuin42_HostAddress}}/api/animals
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals/search?name=test
+GET {{Dierentuin42_HostAddress}}/api/animals/search?name=testnameveranderdtest
 
 ###
 
@@ -100,6 +100,6 @@ DELETE {{Dierentuin42_HostAddress}}/api/categories/
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/categories/search?name=testnameveranderdtest
+GET {{Dierentuin42_HostAddress}}/api/categories/search?name=Checkenofapikanaanpassen3
 
 ###

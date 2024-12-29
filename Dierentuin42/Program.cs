@@ -1,32 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Dierentuin42.Data;
-using System.Text.Json.Serialization;
+﻿using Dierentuin42.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<Dierentuin42Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Dierentuin42Context") ?? throw new InvalidOperationException("Connection string 'Dierentuin42Context' not found.")));
+
 builder.Services.AddControllers();
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
-    );
+
 var app = builder.Build();
+
+// Seed data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<Dierentuin42Context>();
+    DataSeeder.Seed(services, context);  // Hier wordt de seeder aangeroepen
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 app.MapControllers();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

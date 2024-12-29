@@ -124,7 +124,6 @@ namespace Dierentuin42.Controllers
                 return NotFound();
             }
 
-            // Haal de categorie op inclusief de gekoppelde dieren
             var category = await _context.Category
                 .Include(c => c.Animals)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -134,16 +133,14 @@ namespace Dierentuin42.Controllers
                 return NotFound();
             }
 
-            // Haal alle dieren op uit de database
             var allAnimals = await _context.Animal.ToListAsync();
 
-            // Stel de ViewBag samen voor de beschikbare dieren
             ViewBag.AvailableAnimals = allAnimals
                 .Select(a => new SelectListItem
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Selected = category.Animals.Any(animal => animal.Id == a.Id) // Controleer hier
+                    Selected = category.Animals.Any(animal => animal.Id == a.Id) 
                 })
                 .ToList();
 
@@ -175,10 +172,8 @@ namespace Dierentuin42.Controllers
                         return NotFound();
                     }
 
-                    // Update de categorie-eigenschappen
                     existingCategory.Name = category.Name;
 
-                    // Update de gekoppelde dieren
                     existingCategory.Animals.Clear();
                     if (selectedAnimalIds != null && selectedAnimalIds.Any())
                     {

@@ -226,6 +226,8 @@ namespace Dierentuin42.Controllers
                     if (remainingSpace >= animal.spaceRequirement)
                     {
                         // GENOEG RUIMTE, DUS KAN VERDER
+                        animal.spaceRequirement = Math.Round(animal.spaceRequirement, 2);
+
                         _context.Add(animal);
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
@@ -233,7 +235,7 @@ namespace Dierentuin42.Controllers
                     else
                     {
                         // NIET GENOEG RUIMTE
-                        ModelState.AddModelError("spaceRequirement", "Te weinig ruimte in gekozen verblijf (beschikbaar: " + remainingSpace + "m²/" + enclosure.Size + "m²)");
+                        ModelState.AddModelError("spaceRequirement", "Te weinig ruimte in gekozen verblijf (beschikbaar: " + Math.Round(remainingSpace, 2) + "m²/" + enclosure.Size + "m²)");
                     }
                 }
                 else
@@ -247,6 +249,7 @@ namespace Dierentuin42.Controllers
             ViewData["EnclosureId"] = new SelectList(_context.Set<Enclosure>(), "Id", "Id", animal.EnclosureId);
             return View(animal);
         }
+
 
 
         // GET: Animals/Edit/5

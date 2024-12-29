@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Dierentuin42.Data;
 using Dierentuin42.Models;
 using Dierentuin42.Migrations;
+using System.Linq.Expressions;
 
 namespace Dierentuin42.Controllers
 {
@@ -149,7 +150,7 @@ namespace Dierentuin42.Controllers
                 try
                 {
                     var existingZoo = await _context.Zoo
-                        .Include (z => z.Enclosures)
+                        .Include(z => z.Enclosures)
                         .FirstOrDefaultAsync(z => z.Id == id);
 
                     if (existingZoo == null)
@@ -160,7 +161,7 @@ namespace Dierentuin42.Controllers
                     existingZoo.Name = zoo.Name;
 
                     existingZoo.Enclosures.Clear();
-                   
+
                     if (selectedEnclosureIds != null && selectedEnclosureIds.Any())
                     {
                         foreach (var enclolsureId in selectedEnclosureIds)
@@ -188,7 +189,7 @@ namespace Dierentuin42.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.AvailableAnimals = _context.Enclosure
+            ViewBag.AvailableEnclosures = _context.Enclosure
                 .Select(e => new SelectListItem
                 {
                     Value = e.Id.ToString(),

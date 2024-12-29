@@ -26,6 +26,7 @@
                     <div class="form-group">
                         <label asp-for="Animals" class="control-label"></label>
                         <select id="SelectedAnimalIds" name="selectedAnimalIds" multiple class="form-control large-select">
+                            <option value="">Selecteer dieren...</option>
                             @foreach (var animal in ViewBag.AvailableAnimals)
                             {
                                 <option value="@animal.Value">@animal.Text</option>
@@ -36,6 +37,7 @@
                     <div class="form-group">
                         <label asp-for="EnclosureClimate" class="control-label"></label>
                         <select asp-for="EnclosureClimate" class="form-control">
+                            <option value="">Selecteer een klimaat...</option>
                             @foreach (var climate in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.Climate)).Cast<Dierentuin42.Models.Enclosure.Climate>())
                             {
                                 <option value="@climate">@climate</option>
@@ -46,7 +48,8 @@
 
                     <div class="form-group">
                         <label asp-for="EnclosureHabitatType" class="control-label"></label>
-                        <select asp-for="EnclosureHabitatType" class="form-control large-select" multiple>
+                        <select asp-for="EnclosureHabitatType" class="form-control">
+                            <option value="">Selecteer een habitat type...</option>
                             @foreach (var habitat in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.HabitatType)).Cast<Dierentuin42.Models.Enclosure.HabitatType>())
                             {
                                 <option value="@habitat">@habitat</option>
@@ -58,6 +61,7 @@
                     <div class="form-group">
                         <label asp-for="EnclosureSecurityLevel" class="control-label"></label>
                         <select asp-for="EnclosureSecurityLevel" class="form-control">
+                            <option value="">Selecteer een beveiligingsniveau...</option>
                             @foreach (var security in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.SecurityLevel)).Cast<Dierentuin42.Models.Enclosure.SecurityLevel>())
                             {
                                 <option value="@security">@security</option>

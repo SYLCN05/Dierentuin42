@@ -130,6 +130,19 @@
                                                 }
                                             </select>
                                         </th>
+
+                                        <th scope="col">
+                                            Ruimtevereiste (m²)
+                                            <select class="form-control form-control-sm mt-2" name="filterSpaceRequirement">
+                                                <option value="">Filter</option>
+                                                @foreach (var item in ViewData["SpaceRequirements"] as List<double>)
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </select>
+                                        </th>
+
+
                                         <th scope="col">
                                             Acties
                                             <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Filters toepassen</button>
@@ -149,6 +162,8 @@
                                             <td>@Html.DisplayFor(modelItem => item.Prey)</td>
                                             <td>@Html.DisplayFor(modelItem => item.Enclosure.Name)</td>
                                             <td>@Html.DisplayFor(modelItem => item.SecurityRequirement)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.spaceRequirement)</td>
+
                                             <td>
                                                 <div class="d-flex justify-content-center">
                                                     <a class="btn btn-warning btn-sm mx-2 shadow-sm" asp-action="Edit" asp-route-id="@item.Id" title="Bewerk Dier">

@@ -109,5 +109,39 @@ namespace Dierentuin42.Models
             Medium,
             High
         }
+
+
+        public bool IsAwake(bool isSunrise)
+        {
+            return AnimalActivityPattern switch
+            {
+                ActivityPattern.Diurnal => isSunrise,
+                ActivityPattern.Nocturnal => !isSunrise,
+                ActivityPattern.Cathemeral => true,
+                _ => false
+            };
+        }
+
+        public string GetFeedingTime()
+        {
+            Console.WriteLine($"Dier: {Name}, Voedsel: {Prey}, Dieet: {AnimalDiet}");
+
+            if (!string.IsNullOrEmpty(Prey))
+            {
+                return $"Eet {Prey}.";
+            }
+
+            return AnimalDiet switch
+            {
+                DietaryClass.Carnivore => "Eet vlees.",
+                DietaryClass.Herbivore => "Eet planten.",
+                DietaryClass.Omnivore => "Eet zowel planten als vlees.",
+                DietaryClass.Insectivore => "Eet insecten.",
+                DietaryClass.Piscivore => "Eet vis.",
+                _ => "Geen specifiek dieet."
+            };
+        }
+
+
     }
 }

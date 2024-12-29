@@ -103,3 +103,7 @@ DELETE {{Dierentuin42_HostAddress}}/api/categories/
 GET {{Dierentuin42_HostAddress}}/api/categories/search?name=Checkenofapikanaanpassen3
 
 ###
+
+GET {{Dierentuin42_HostAddress}}/api/animals/search?name=ttest12&species=Chimpansee&category=test&size=VeryLarge&diet=Carnivore&activity=Diurnal&prey=randomiets&enclosure=ijsplek&security=Low
+
+###

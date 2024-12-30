@@ -154,7 +154,7 @@ namespace Dierentuin42.Controllers
                 animals = sortOrder == "asc" ? animals.OrderBy(lambda) : animals.OrderByDescending(lambda);
             }
 
-            // UNIEKE WAARDES VOOR FILTER
+            // UNIEKE WAARDES VOOR FILTER, IK HEB DIT ALLEMAAL ALS VIEWDATA GEDAAN OMDAT IK DIT OOK ZAG IN DE BRIGHTSPACE MAAR IK WEET DAT VIEWBAG OOK EEN OPTIE IS.
             ViewData["Names"] = await _context.Animal.Select(a => a.Name).Distinct().ToListAsync();
             ViewData["Species"] = await _context.Animal.Select(a => a.Species).Distinct().ToListAsync();
             ViewData["Prey"] = await _context.Animal.Select(a => a.Prey).Distinct().ToListAsync();

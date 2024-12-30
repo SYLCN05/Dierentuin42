@@ -3,36 +3,54 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// DATABASE CONTEXT CONFHIGURATIE
 builder.Services.AddDbContext<Dierentuin42Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Dierentuin42Context") ?? throw new InvalidOperationException("Connection string 'Dierentuin42Context' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Dierentuin42Context")
+        ?? throw new InvalidOperationException("Connection string 'Dierentuin42Context' not found.")));
 
-builder.Services.AddControllers();
+// CONTAINER SERVICE
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Seed data
+// DATA SEEDER
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<Dierentuin42Context>();
-    DataSeeder.Seed(services, context);  // Hier wordt de seeder aangeroepen
+
+    try
+    {
+        var context = services.GetRequiredService<Dierentuin42Context>();
+
+        // DATABASE CHECK EN LAATSTE WIJZIGINGEN MIGREREN
+        context.Database.Migrate();
+
+        // OFFICIEEL DATA SEEDEN
+        DataSeeder.Seed(services, context);
+    }
+    catch (Exception ex)
+    {
+        // TEST FOUT LOG
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error seeden database");
+    }
 }
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-app.MapControllers();
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseHttpsRedirection(); 
+app.UseStaticFiles();      
 
-app.UseRouting();
-app.UseAuthorization();
+app.UseRouting();          
 
+app.UseAuthorization();    
+
+// STNADAARDROUTE
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

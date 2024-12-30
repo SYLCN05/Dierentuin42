@@ -3,6 +3,7 @@ using Dierentuin42.Models;
 using Dierentuin42.Data;
 using System;
 using System.Linq;
+using Dierentuin42.Migrations;
 
 namespace Dierentuin42.Data
 {
@@ -21,7 +22,9 @@ namespace Dierentuin42.Data
 
             //CHECK OF DATABASE IS GESEED
             if (context.Category.Any())
+            {
                 return;
+            }
 
             // CATEGORIES SEEDEN
             var categoryFaker = new Faker<Category>()
@@ -52,7 +55,9 @@ namespace Dierentuin42.Data
             context.Enclosure.AddRange(enclosureFaker);
             context.SaveChanges();
 
-            // LIJST MET MOGELIJKE DIERSOORTEN, IK HEB DIT HANDMATIG GEDAAN OMDAT BOGUS GEEN COLLECTIE HEEFT DIE ENIGSZINS OP DEZE CATEGORIE LIJKT
+            // LIJST MET MOGELIJKE DIERSOORTEN, DIT IS HARDCODED EN GAAT IN OP WAT ER IN BRIGHTSPACE GAAT MAAR DIT KOMT OMDAT:
+            // IK HEB DIT HANDMATIG GEDAAN OMDAT BOGUS GEEN COLLECTIE HEEFT DIE ENIGSZINS OP DEZE CATEGORIE LIJKT
+            // BRIGHTSPACE: Je mag er wel van afwijken, maar alleen als je die keuze uitlegt (in commentaar in de code).
             var speciesList = new[] { "Leeuw", "Tijger", "Olifant", "Giraf", "Zebra", "Neushoorn", "Aap", "Krokodil", "Panda", "Kangoeroe" };
 
             // ANIMALS SEEDEN

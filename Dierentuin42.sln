@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dierentuin42", "Dierentuin42\Dierentuin42.csproj", "{F83BA9F6-FAE8-412B-9681-4E459885300C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dierentuin42.UnitTests", "Dierentuin42.UnitTests\Dierentuin42.UnitTests.csproj", "{7679B37E-1E0C-47AC-94DC-59D0752DE585}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F83BA9F6-FAE8-412B-9681-4E459885300C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F83BA9F6-FAE8-412B-9681-4E459885300C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F83BA9F6-FAE8-412B-9681-4E459885300C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7679B37E-1E0C-47AC-94DC-59D0752DE585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7679B37E-1E0C-47AC-94DC-59D0752DE585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7679B37E-1E0C-47AC-94DC-59D0752DE585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7679B37E-1E0C-47AC-94DC-59D0752DE585}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

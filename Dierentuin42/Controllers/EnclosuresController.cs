@@ -99,15 +99,6 @@ namespace Dierentuin42.Controllers
                 );
             }
 
-            // SORTEREN
-            if (!string.IsNullOrEmpty(sortColumn))
-            {
-                var param = Expression.Parameter(typeof(Enclosure), "x");
-                var property = Expression.Property(param, sortColumn);
-                var lambda = Expression.Lambda<Func<Enclosure, object>>(Expression.Convert(property, typeof(object)), param);
-                enclosures = sortOrder == "asc" ? enclosures.OrderBy(lambda) : enclosures.OrderByDescending(lambda);
-            }
-
             // UNIEKE WAARDES VOOR FILTER
             ViewData["Zoos"] = await _context.Zoo.ToListAsync();
             ViewData["Names"] = await _context.Enclosure.Select(e => e.Name).Distinct().ToListAsync();

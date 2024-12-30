@@ -23,7 +23,7 @@ namespace Dierentuin42.Tests
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
 
-            _context = new Dierentuin42Context(options);  // Geen mock nodig
+            _context = new Dierentuin42Context(options);  
             _controller = new AnimalsController(_context);
         }
 

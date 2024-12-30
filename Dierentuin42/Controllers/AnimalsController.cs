@@ -34,8 +34,7 @@ namespace Dierentuin42.Controllers
     string filterEnclosure,
     string filterSpaceRequirement,
     string filterSecurity,
-    string sortColumn,
-    string sortOrder)
+    string sortColumn)
         {
             var animals = _context.Animal
                 .Include(a => a.Category)
@@ -142,16 +141,6 @@ namespace Dierentuin42.Controllers
                     (animalSize.HasValue && a.AnimalSize == animalSize.Value) ||
                     (spaceRequirement.HasValue && a.spaceRequirement >= spaceRequirement.Value)
                 );
-            }
-
-
-            // SORTEREN
-            if (!string.IsNullOrEmpty(sortColumn))
-            {
-                var param = Expression.Parameter(typeof(Animal), "x");
-                var property = Expression.Property(param, sortColumn);
-                var lambda = Expression.Lambda<Func<Animal, object>>(Expression.Convert(property, typeof(object)), param);
-                animals = sortOrder == "asc" ? animals.OrderBy(lambda) : animals.OrderByDescending(lambda);
             }
 
             // UNIEKE WAARDES VOOR FILTER, IK HEB DIT ALLEMAAL ALS VIEWDATA GEDAAN OMDAT IK DIT OOK ZAG IN DE BRIGHTSPACE MAAR IK WEET DAT VIEWBAG OOK EEN OPTIE IS.

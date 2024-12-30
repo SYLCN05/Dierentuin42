@@ -28,7 +28,7 @@ namespace Dierentuin42.Data
 
             // CATEGORIES SEEDEN
             var categoryFaker = new Faker<Category>()
-                .RuleFor(c => c.Name, f => f.Commerce.Department())
+                .RuleFor(c => c.Name, f => f.Name.LastName())
                 .Generate(5);
 
             context.Category.AddRange(categoryFaker);
@@ -36,7 +36,7 @@ namespace Dierentuin42.Data
 
             // ZOOS SEEDEN
             var zooFaker = new Faker<Zoo>()
-                .RuleFor(z => z.Name, f => f.Company.CompanyName())
+                .RuleFor(z => z.Name, f => f.Name.FirstName())
                 .Generate(3);
 
             context.Zoo.AddRange(zooFaker);
@@ -44,7 +44,7 @@ namespace Dierentuin42.Data
 
             // ENCLOSURES SEEDEN
             var enclosureFaker = new Faker<Enclosure>()
-                .RuleFor(e => e.Name, f => f.Commerce.ProductName())
+                .RuleFor(e => e.Name, f => f.Name.FirstName())
                 .RuleFor(e => e.EnclosureClimate, f => f.PickRandom<Enclosure.Climate>())
                 .RuleFor(e => e.EnclosureHabitatType, f => f.PickRandom<Enclosure.HabitatType>())
                 .RuleFor(e => e.EnclosureSecurityLevel, f => f.PickRandom<Enclosure.SecurityLevel>())
@@ -73,7 +73,7 @@ namespace Dierentuin42.Data
                 .RuleFor(a => a.SecurityRequirement, f => f.PickRandom<Animal.SecurityLevel>())
                 .RuleFor(a => a.spaceRequirement, f => Math.Round(f.Random.Double(1, 500), 2))
 
-                .Generate(20);
+                .Generate(10);
 
             context.Animal.AddRange(animalFaker);
             context.SaveChanges();

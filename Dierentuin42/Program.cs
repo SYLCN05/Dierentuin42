@@ -1,5 +1,6 @@
 ﻿using Dierentuin42.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Dierentuin42Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Dierentuin42Context")
         ?? throw new InvalidOperationException("Connection string 'Dierentuin42Context' not found.")));
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
+    );
 // CONTAINER SERVICE
 builder.Services.AddControllersWithViews();
 

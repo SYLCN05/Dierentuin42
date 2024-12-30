@@ -286,8 +286,38 @@ namespace Dierentuin42.Controllers
             {
                 try
                 {
-                    _context.Update(animal);
-                    await _context.SaveChangesAsync();
+                    if (animal.EnclosureId.HasValue)
+                    {
+                        var enclosure = await _context.Enclosure
+                            .Where(e => e.Id == animal.EnclosureId)
+                            .FirstOrDefaultAsync();
+
+                        if (enclosure != null)
+                        {
+                            // BEREKENING VAN TOTALE RUIMTE IN GEBRUIK
+                            var totalSpaceOccupied = await _context.Animal
+                                .Where(a => a.EnclosureId == animal.EnclosureId && a.Id != animal.Id)
+                                .SumAsync(a => a.spaceRequirement);
+
+                            double remainingSpace = enclosure.Size - totalSpaceOccupied;
+
+                            if (remainingSpace < animal.spaceRequirement)
+                            {
+                                ModelState.AddModelError("spaceRequirement", $"Te weinig ruimte in gekozen verblijf (beschikbaar: {Math.Round(remainingSpace, 2)}m²/{enclosure.Size}m²)");
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("EnclosureId", "Geselecteerde verblijf niet gevonden");
+                        }
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        _context.Update(animal);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -300,12 +330,13 @@ namespace Dierentuin42.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name", animal.CategoryId);
             ViewData["EnclosureId"] = new SelectList(_context.Set<Enclosure>(), "Id", "Name", animal.EnclosureId);
             return View(animal);
         }
+
 
         // GET: Animals/Delete/5
         public async Task<IActionResult> Delete(int? id)

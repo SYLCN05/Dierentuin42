@@ -3,11 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Dierentuin42.Controllers;
 using Dierentuin42.Models;
 using Dierentuin42.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace Dierentuin42.Tests
 {
@@ -102,7 +97,7 @@ namespace Dierentuin42.Tests
 
             var updatedEnclosure = new Enclosure
             {
-                Id = enclosure.Id,  // Id moet hetzelfde blijven
+                Id = enclosure.Id,  
                 Name = "Updated Enclosure",
                 EnclosureClimate = Enclosure.Climate.Tropical,
                 EnclosureHabitatType = Enclosure.HabitatType.Forest,
@@ -175,7 +170,7 @@ namespace Dierentuin42.Tests
             // ASSERT
             var viewResult = Assert.IsType<RedirectToActionResult>(result);
             var deletedEnclosure = await context.Enclosure.FindAsync(enclosure.Id);
-            Assert.Null(deletedEnclosure);  // Het enclosure zou verwijderd moeten zijn
+            Assert.Null(deletedEnclosure); 
         }
 
         [Fact]

@@ -3,11 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Dierentuin42.Controllers;
 using Dierentuin42.Models;
 using Dierentuin42.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace Dierentuin42.Tests
 {

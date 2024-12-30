@@ -142,6 +142,30 @@ namespace Dierentuin42.Models
             };
         }
 
+        public bool HasValidPrey() => !string.IsNullOrEmpty(Prey);
+
+        public bool HasValidEnclosure() => EnclosureId != 0;
+
+        public bool HasValidDiet() => Enum.IsDefined(typeof(DietaryClass), AnimalDiet);
+
+        public bool HasValidSize() => Enum.IsDefined(typeof(Size), AnimalSize);
+
+        public bool HasValidActivityPattern() => Enum.IsDefined(typeof(ActivityPattern), AnimalActivityPattern);
+
+        public bool HasValidSecurityLevel() => Enum.IsDefined(typeof(SecurityLevel), SecurityRequirement);
+
+        public Dictionary<string, bool> CheckAllConstraints()
+        {
+            return new Dictionary<string, bool>
+    {
+        { "Heeft prooi", HasValidPrey() },
+        { "Is gekoppeld aan een verblijf", HasValidEnclosure() },
+        { "Geldig dieet", HasValidDiet() },
+        { "Geldige grootte", HasValidSize() },
+        { "Geldig activiteitenpatroon", HasValidActivityPattern() },
+        { "Beveiligingsniveau aanwezig", HasValidSecurityLevel() }
+    };
+        }
 
     }
 }

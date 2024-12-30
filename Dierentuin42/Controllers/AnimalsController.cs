@@ -337,7 +337,23 @@ namespace Dierentuin42.Controllers
             return View("FeedingTime", feedingTimes);
         }
 
+        public async Task<IActionResult> CheckConstraints()
+        {
+            var animals = await _context.Animal
+                .Include(a => a.Category)
+                .Include(a => a.Enclosure)
+                .ToListAsync();
 
+            var results = animals.Select(a => new
+            {
+                Animal = a.Name,
+                Species = a.Species,
+                Category = a.Category.Name,
+                Constraints = a.CheckAllConstraints()
+            }).ToList();
+
+            return View(results);
+        }
 
     }
 }

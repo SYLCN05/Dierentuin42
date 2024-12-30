@@ -18,7 +18,7 @@ namespace Dierentuin42.Tests
 
         public CategoriesControllerTests()
         {
-            // Set up an in-memory database
+            // IN-MEMORY DATABASE
             var options = new DbContextOptionsBuilder<Dierentuin42Context>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
@@ -26,7 +26,7 @@ namespace Dierentuin42.Tests
             _context = new Dierentuin42Context(options);
             _controller = new CategoriesController(_context);
 
-            // Add some test data
+            // DATA SEEDEN
             _context.Category.Add(new Category { Id = 1, Name = "Mammals" });
             _context.Category.Add(new Category { Id = 2, Name = "Birds" });
             _context.SaveChanges();
@@ -35,13 +35,13 @@ namespace Dierentuin42.Tests
         [Fact]
         public async Task DeleteConfirmed_ShouldRedirectToIndex_WhenCategoryExists()
         {
-            // Arrange
+            // ARRANGE
             var categoryId = 1;
 
-            // Act
+            // ACT
             var result = await _controller.DeleteConfirmed(categoryId);
 
-            // Assert
+            // ASSERT
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectResult.ActionName);
         }

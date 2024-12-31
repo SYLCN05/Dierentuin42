@@ -9,13 +9,11 @@ namespace Dierentuin42.Controllers.Api
     [ApiController]
     public class AnimalsApiController : ControllerBase
     {
-        private readonly AnimalsController _webController;
         private readonly Dierentuin42Context _context;
 
         public AnimalsApiController(Dierentuin42Context context)
         {
             _context = context;
-            _webController = new AnimalsController(context);
         }
 
         // GET: api/animals
@@ -104,10 +102,20 @@ namespace Dierentuin42.Controllers.Api
 
         // GET: api/animals/search
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Animal>>> SearchAnimals([FromQuery] string name)
+        public async Task<ActionResult<IEnumerable<Animal>>> SearchAnimals([FromQuery] string name, string species, string category, Animal.Size size, Animal.DietaryClass diet, Animal.ActivityPattern activity, string prey, string enclosure, Animal.SecurityLevel security)
         {
             var results = await _context.Animal
-                .Where(s => s.Name.Equals(name))
+                .Where(s =>
+                    s.Name.Equals(name) &&
+                    s.Species.Equals(species) &&
+                    s.Category.Name.Equals(category)&&
+                    s.AnimalSize == size &&
+                    s.AnimalDiet == diet&&
+                    s.AnimalActivityPattern == activity&&
+                    s.Prey.Equals(prey)&&
+                    s.Enclosure.Name.Equals(enclosure)&&
+                    s.SecurityRequirement == security
+                )
                 .ToListAsync();
             return Ok(results);
         }

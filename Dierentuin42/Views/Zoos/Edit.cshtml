@@ -30,8 +30,8 @@
 
                     <!-- VERBLIJVEN -->
                     <div class="form-group">
-                        <label for="selectedEnclosuresIds">Selecteer Verblijven</label>
-                        <select id="selectedEnclosuresIds" name="selectedEnclosuresIds" multiple class="form-control">
+                        <label for="selectedEnclosureIds">Selecteer Verblijven</label>
+                        <select id="selectedEnclosureIds" name="selectedEnclosureIds" multiple class="form-control">
                             @foreach (var enclosure in ViewBag.AvailableEnclosures)
                             {
                                 <option value="@enclosure.Value">@enclosure.Text</option>

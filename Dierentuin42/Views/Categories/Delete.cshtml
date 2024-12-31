@@ -24,6 +24,17 @@
                             <td class="fw-bold">@Html.DisplayNameFor(model => model.Name)</td>
                             <td>@Html.DisplayFor(model => model.Name)</td>
                         </tr>
+                        <tr>
+                            <td class="fw-bold">@Html.DisplayNameFor(model => model.Animals)</td>
+                            <td>
+                                <ul>
+                                    @foreach (var animal in Model.Animals)
+                                    {
+                                        <li>@animal.Name</li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 

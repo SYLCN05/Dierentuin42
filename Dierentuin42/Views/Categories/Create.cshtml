@@ -12,7 +12,7 @@
                 <h5 class="text-primary text-center mb-4">Vul de gegevens van de nieuwe categorie in</h5>
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <!-- Form Fields -->
+
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
                         <input asp-for="Name" class="form-control" />
@@ -28,7 +28,7 @@
                         </select>
                     </div>
                     <hr class="my-3" style="border: 0; border-top: 3px solid #007bff; margin: 5px 0;">
-                    <!-- Knoppen -->
+
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-primary btn-lg shadow-lg d-flex justify-content-center align-items-center">
                             <i class="fas fa-save" style="margin-right: 8px;"></i> Creëer Categorie

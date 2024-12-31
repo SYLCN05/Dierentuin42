@@ -32,9 +32,9 @@ namespace Dierentuin42.Controllers
     string filterActivityPattern,
     string filterPrey,
     string filterEnclosure,
+    string filterSpaceRequirement,
     string filterSecurity,
-    string sortColumn,
-    string sortOrder)
+    string sortColumn)
         {
             var animals = _context.Animal
                 .Include(a => a.Category)
@@ -72,6 +72,14 @@ namespace Dierentuin42.Controllers
                 animals = animals.Where(a => a.AnimalActivityPattern == activity);
             }
 
+            if (!string.IsNullOrEmpty(filterSpaceRequirement))
+            {
+                if (double.TryParse(filterSpaceRequirement, out double parsedSpaceRequirement))
+                {
+                    animals = animals.Where(a => a.spaceRequirement.Equals(parsedSpaceRequirement));
+                }
+            }
+
             if (!string.IsNullOrEmpty(filterSecurity) && Enum.TryParse(filterSecurity, out Animal.SecurityLevel security))
             {
                 animals = animals.Where(a => a.SecurityRequirement == security);
@@ -94,6 +102,7 @@ namespace Dierentuin42.Controllers
                 Animal.SecurityLevel? securityLevel = null;
                 Animal.DietaryClass? dietaryClass = null;
                 Animal.Size? animalSize = null;
+                double? spaceRequirement = null;
 
                 if (Enum.TryParse(searchText, out Animal.ActivityPattern parsedActivityPattern))
                 {
@@ -114,6 +123,10 @@ namespace Dierentuin42.Controllers
                 {
                     animalSize = parsedSize;
                 }
+                if (double.TryParse(searchText, out double parsedSpaceRequirement))
+                {
+                    spaceRequirement = parsedSpaceRequirement;
+                }
 
                 animals = animals.Where(a =>
                     a.Name.Contains(searchText) ||
@@ -125,21 +138,12 @@ namespace Dierentuin42.Controllers
                     (activityPattern.HasValue && a.AnimalActivityPattern == activityPattern.Value) ||
                     (securityLevel.HasValue && a.SecurityRequirement == securityLevel.Value) ||
                     (dietaryClass.HasValue && a.AnimalDiet == dietaryClass.Value) ||
-                    (animalSize.HasValue && a.AnimalSize == animalSize.Value)
+                    (animalSize.HasValue && a.AnimalSize == animalSize.Value) ||
+                    (spaceRequirement.HasValue && a.spaceRequirement >= spaceRequirement.Value)
                 );
             }
 
-
-            // SORTEREN
-            if (!string.IsNullOrEmpty(sortColumn))
-            {
-                var param = Expression.Parameter(typeof(Animal), "x");
-                var property = Expression.Property(param, sortColumn);
-                var lambda = Expression.Lambda<Func<Animal, object>>(Expression.Convert(property, typeof(object)), param);
-                animals = sortOrder == "asc" ? animals.OrderBy(lambda) : animals.OrderByDescending(lambda);
-            }
-
-            // UNIEKE WAARDES VOOR FILTER
+            // UNIEKE WAARDES VOOR FILTER, IK HEB DIT ALLEMAAL ALS VIEWDATA GEDAAN OMDAT IK DIT OOK ZAG IN DE BRIGHTSPACE MAAR IK WEET DAT VIEWBAG OOK EEN OPTIE IS.
             ViewData["Names"] = await _context.Animal.Select(a => a.Name).Distinct().ToListAsync();
             ViewData["Species"] = await _context.Animal.Select(a => a.Species).Distinct().ToListAsync();
             ViewData["Prey"] = await _context.Animal.Select(a => a.Prey).Distinct().ToListAsync();
@@ -149,13 +153,12 @@ namespace Dierentuin42.Controllers
             ViewData["ActivityPatterns"] = Enum.GetValues(typeof(Animal.ActivityPattern)).Cast<Animal.ActivityPattern>().ToList();
             ViewData["Enclosures"] = await _context.Enclosure.Select(e => e.Name).Distinct().ToListAsync();
             ViewData["SecurityLevels"] = Enum.GetValues(typeof(Animal.SecurityLevel)).Cast<Animal.SecurityLevel>().ToList();
+            ViewData["SpaceRequirements"] = await _context.Animal.Select(a => a.spaceRequirement).Distinct().OrderBy(sr => sr).ToListAsync();
+
 
             // GEEF TERUG
             return View(await animals.ToListAsync());
         }
-
-
-
 
         // GET: Animals/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -190,18 +193,53 @@ namespace Dierentuin42.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement")] Animal animal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement, spaceRequirement")] Animal animal)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(animal);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // VERKRIJGEN DETAILS VAN VERBLIJF
+                var enclosure = await _context.Enclosure
+                    .Where(e => e.Id == animal.EnclosureId)
+                    .FirstOrDefaultAsync();
+
+                if (enclosure != null)
+                {
+                    // BEREKENING VAN TOTALE RUIMTE DIE MOMENTEEL IN HET VERBLIJF WORDT INGENOMEN
+                    var totalSpaceOccupied = await _context.Animal
+                        .Where(a => a.EnclosureId == animal.EnclosureId)
+                        .SumAsync(a => a.spaceRequirement);
+
+                    // CONTROLE OF DE RESTERENDE RUIMTE VOLDOENDE IS VOOR HET NIEUWE DIER
+                    double remainingSpace = enclosure.Size - totalSpaceOccupied;
+
+                    if (remainingSpace >= animal.spaceRequirement)
+                    {
+                        // GENOEG RUIMTE, DUS KAN VERDER
+                        animal.spaceRequirement = Math.Round(animal.spaceRequirement, 2);
+
+                        _context.Add(animal);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        // NIET GENOEG RUIMTE
+                        ModelState.AddModelError("spaceRequirement", "Te weinig ruimte in gekozen verblijf (beschikbaar: " + Math.Round(remainingSpace, 2) + "m²/" + enclosure.Size + "m²)");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("EnclosureId", "Geselecteerde verblijf niet gevonden");
+                }
             }
+
+            // ALS HET MODEL ONGELDIG IS OF ALS FOUT OPGETREDEN RETOURNEER DE WEERGAVE MET HUIDIGE MODEL
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id", animal.CategoryId);
             ViewData["EnclosureId"] = new SelectList(_context.Set<Enclosure>(), "Id", "Id", animal.EnclosureId);
             return View(animal);
         }
+
+
 
         // GET: Animals/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -226,7 +264,7 @@ namespace Dierentuin42.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement")] Animal animal)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement, spaceRequirement")] Animal animal)
         {
             if (id != animal.Id)
             {
@@ -237,8 +275,38 @@ namespace Dierentuin42.Controllers
             {
                 try
                 {
-                    _context.Update(animal);
-                    await _context.SaveChangesAsync();
+                    if (animal.EnclosureId.HasValue)
+                    {
+                        var enclosure = await _context.Enclosure
+                            .Where(e => e.Id == animal.EnclosureId)
+                            .FirstOrDefaultAsync();
+
+                        if (enclosure != null)
+                        {
+                            // BEREKENING VAN TOTALE RUIMTE IN GEBRUIK
+                            var totalSpaceOccupied = await _context.Animal
+                                .Where(a => a.EnclosureId == animal.EnclosureId && a.Id != animal.Id)
+                                .SumAsync(a => a.spaceRequirement);
+
+                            double remainingSpace = enclosure.Size - totalSpaceOccupied;
+
+                            if (remainingSpace < animal.spaceRequirement)
+                            {
+                                ModelState.AddModelError("spaceRequirement", $"Te weinig ruimte in gekozen verblijf (beschikbaar: {Math.Round(remainingSpace, 2)}m²/{enclosure.Size}m²)");
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("EnclosureId", "Geselecteerde verblijf niet gevonden");
+                        }
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        _context.Update(animal);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -251,12 +319,13 @@ namespace Dierentuin42.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name", animal.CategoryId);
             ViewData["EnclosureId"] = new SelectList(_context.Set<Enclosure>(), "Id", "Name", animal.EnclosureId);
             return View(animal);
         }
+
 
         // GET: Animals/Delete/5
         public async Task<IActionResult> Delete(int? id)

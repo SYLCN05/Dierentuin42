@@ -193,51 +193,63 @@ namespace Dierentuin42.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement, spaceRequirement")] Animal animal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Species,CategoryId,AnimalSize,AnimalDiet,AnimalActivityPattern,Prey,EnclosureId,SecurityRequirement,spaceRequirement")] Animal animal)
         {
             if (ModelState.IsValid)
             {
-                // VERKRIJGEN DETAILS VAN VERBLIJF
-                var enclosure = await _context.Enclosure
-                    .Where(e => e.Id == animal.EnclosureId)
-                    .FirstOrDefaultAsync();
-
-                if (enclosure != null)
+                if (animal.EnclosureId != null) 
                 {
-                    // BEREKENING VAN TOTALE RUIMTE DIE MOMENTEEL IN HET VERBLIJF WORDT INGENOMEN
-                    var totalSpaceOccupied = await _context.Animal
-                        .Where(a => a.EnclosureId == animal.EnclosureId)
-                        .SumAsync(a => a.spaceRequirement);
+                    // VERKRIJGEN DETAILS VAN VERBLIJF
+                    var enclosure = await _context.Enclosure
+                        .Where(e => e.Id == animal.EnclosureId)
+                        .FirstOrDefaultAsync();
 
-                    // CONTROLE OF DE RESTERENDE RUIMTE VOLDOENDE IS VOOR HET NIEUWE DIER
-                    double remainingSpace = enclosure.Size - totalSpaceOccupied;
-
-                    if (remainingSpace >= animal.spaceRequirement)
+                    if (enclosure != null)
                     {
-                        // GENOEG RUIMTE, DUS KAN VERDER
-                        animal.spaceRequirement = Math.Round(animal.spaceRequirement, 2);
+                        // BEREKENING VAN TOTALE RUIMTE DIE MOMENTEEL IN HET VERBLIJF WORDT INGENOMEN
+                        var totalSpaceOccupied = await _context.Animal
+                            .Where(a => a.EnclosureId == animal.EnclosureId)
+                            .SumAsync(a => a.spaceRequirement);
 
-                        _context.Add(animal);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+                        // CONTROLE OF DE RESTERENDE RUIMTE VOLDOENDE IS VOOR HET NIEUWE DIER
+                        double remainingSpace = enclosure.Size - totalSpaceOccupied;
+
+                        if (remainingSpace >= animal.spaceRequirement)
+                        {
+                            // GENOEG RUIMTE, DUS KAN VERDER
+                            animal.spaceRequirement = Math.Round(animal.spaceRequirement, 2);
+
+                            _context.Add(animal);
+                            await _context.SaveChangesAsync();
+                            return RedirectToAction(nameof(Index));
+                        }
+                        else
+                        {
+                            // NIET GENOEG RUIMTE
+                            ModelState.AddModelError("spaceRequirement", "Te weinig ruimte in gekozen verblijf (beschikbaar: " + Math.Round(remainingSpace, 2) + "m²/" + enclosure.Size + "m²)");
+                        }
                     }
                     else
                     {
-                        // NIET GENOEG RUIMTE
-                        ModelState.AddModelError("spaceRequirement", "Te weinig ruimte in gekozen verblijf (beschikbaar: " + Math.Round(remainingSpace, 2) + "m²/" + enclosure.Size + "m²)");
+                        ModelState.AddModelError("EnclosureId", "Geselecteerde verblijf niet gevonden");
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("EnclosureId", "Geselecteerde verblijf niet gevonden");
+                    // GEEN VERBLIJF GESELECTEERD, DIRECT OPSLAAN (ANDERS KAN VERBLIJF NIET NULL ZIJN (VEREISTE IN BRIGHTSPACE))
+                    animal.spaceRequirement = Math.Round(animal.spaceRequirement, 2);
+                    _context.Add(animal);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
             // ALS HET MODEL ONGELDIG IS OF ALS FOUT OPGETREDEN RETOURNEER DE WEERGAVE MET HUIDIGE MODEL
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Id", animal.CategoryId);
-            ViewData["EnclosureId"] = new SelectList(_context.Set<Enclosure>(), "Id", "Id", animal.EnclosureId);
+            ViewData["EnclosureId"] = new SelectList(_context.Enclosure, "Id", "Id", animal.EnclosureId);
             return View(animal);
         }
+
 
 
 

@@ -118,7 +118,7 @@ GET {{Dierentuin42_HostAddress}}/api/enclosures
 ###
 
 
-GET {{Dierentuin42_HostAddress}}/api/enclosures/126
+GET {{Dierentuin42_HostAddress}}/api/enclosures/238
 
 ###
 
@@ -160,4 +160,73 @@ DELETE {{Dierentuin42_HostAddress}}/api/enclosures/146
 
 GET {{Dierentuin42_HostAddress}}/api/enclosures/search?name=Nora&zoo=Trevion&climate=Temperate&habitat=Desert&security=Medium&space=5908.27
 
+###
+
+
+
+
+GET {{Dierentuin42_HostAddress}}/api/zoos
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/zoos/144
+
+###
+
+POST {{Dierentuin42_HostAddress}}/api/zoos
+Content-Type: application/json
+
+{
+  "name": "testofpostwerkt",
+  "enclosures": [
+    {
+      "name": "testenofwerkt",
+      "zooId": 137,
+      "zoo": null,
+      "animals": [],
+      "enclosureClimate": 1,
+      "enclosureHabitatType": 3,
+      "enclosureSecurityLevel": 1,
+      "size": 4000.51
+    },
+    {
+      "name": "testenofwerkt2",
+      "zooId": 137,
+      "zoo": null,
+      "animals": [],
+      "enclosureClimate": 2,
+      "enclosureHabitatType": 4,
+      "enclosureSecurityLevel": 2,
+      "size": 3000.51
+    }
+  ]
+}
+
+###
+
+
+
+PUT {{Dierentuin42_HostAddress}}/api/zoos/148
+Content-Type: application/json
+
+{
+  "id": 148,
+  "name": "testofputwerkt2"
+  
+}
+
+
+
+###
+
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/zoos/164  
+
+###
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/zoos/search?name=Jaylin
 ###

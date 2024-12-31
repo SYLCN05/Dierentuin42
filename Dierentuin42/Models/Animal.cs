@@ -129,8 +129,15 @@ namespace Dierentuin42.Models
 
         public bool HasValidPrey() => !string.IsNullOrEmpty(Prey);
 
-        public bool HasValidEnclosure() => EnclosureId != 0;
+        public bool HasValidCategory()
+        {
+            return CategoryId.HasValue && CategoryId.Value != 0;
+        }
 
+        public bool HasValidEnclosure()
+        {
+            return EnclosureId.HasValue && EnclosureId.Value != 0;
+        }
         public bool HasValidDiet() => Enum.IsDefined(typeof(DietaryClass), AnimalDiet);
 
         public bool HasValidSize() => Enum.IsDefined(typeof(Size), AnimalSize);
@@ -141,15 +148,17 @@ namespace Dierentuin42.Models
 
         public Dictionary<string, bool> CheckAllConstraints()
         {
-            return new Dictionary<string, bool>
-    {
-        { "Heeft prooi", HasValidPrey() },
-        { "Is gekoppeld aan een verblijf", HasValidEnclosure() },
-        { "Geldig dieet", HasValidDiet() },
-        { "Geldige grootte", HasValidSize() },
-        { "Geldig activiteitenpatroon", HasValidActivityPattern() },
-        { "Beveiligingsniveau aanwezig", HasValidSecurityLevel() }
-    };
+            var constraints = new Dictionary<string, bool>
+            {
+                { "Heeft prooi", HasValidPrey() },
+                { "Heeft een categorie", HasValidCategory() },
+                { "Is gekoppeld aan een verblijf", HasValidEnclosure() },
+                { "Geldig dieet", HasValidDiet() },
+                { "Geldige grootte", HasValidSize() },
+                { "Geldig activiteitenpatroon", HasValidActivityPattern() },
+                { "Beveiligingsniveau aanwezig", HasValidSecurityLevel() }
+            };
+            return constraints;
         }
 
     }

@@ -367,5 +367,62 @@ namespace Dierentuin42.Controllers
             return _context.Animal.Any(e => e.Id == id);
         }
 
+
+        public async Task<IActionResult> Sunrise()
+        {
+            ViewBag.Action = "Sunrise";
+            var animals = await _context.Animal.ToListAsync();
+            var awakeAnimals = animals.Where(a => a.IsAwake(true) || a.AnimalActivityPattern == Animal.ActivityPattern.Cathemeral).ToList();
+            return View("AnimalStatus", awakeAnimals);
+        }
+
+        public async Task<IActionResult> Sunset()
+        {
+            ViewBag.Action = "Sunset";
+            var animals = await _context.Animal.ToListAsync();
+            var awakeAnimals = animals.Where(a => a.IsAwake(false) || a.AnimalActivityPattern == Animal.ActivityPattern.Cathemeral).ToList();
+            return View("AnimalStatus", awakeAnimals);
+        }
+
+        public async Task<IActionResult> FeedingTime()
+        {
+            ViewBag.Action = "Feeding Time";
+            var animals = await _context.Animal.ToListAsync();
+
+            var feedingTimes = animals.Select(a => new
+            {
+                Animal = a.Name,
+                Prey = a.Prey,
+                FeedingTime = a.GetFeedingTime(),
+                Diet = a.AnimalDiet.ToString()
+            }).ToList();
+
+            Console.WriteLine("Feeding Times:");
+            foreach (var feedingTime in feedingTimes)
+            {
+                Console.WriteLine($"Animal: {feedingTime.Animal}, Prey: {feedingTime.Prey}, FeedingTime: {feedingTime.FeedingTime}");
+            }
+
+            return View("FeedingTime", feedingTimes);
+        }
+
+        public async Task<IActionResult> CheckConstraints()
+        {
+            var animals = await _context.Animal
+                .Include(a => a.Category)
+                .Include(a => a.Enclosure)
+                .ToListAsync();
+
+            var results = animals.Select(a => new
+            {
+                Animal = a.Name,
+                Species = a.Species,
+                Category = a.Category.Name,
+                Constraints = a.CheckAllConstraints()
+            }).ToList();
+
+            return View(results);
+        }
+
     }
 }

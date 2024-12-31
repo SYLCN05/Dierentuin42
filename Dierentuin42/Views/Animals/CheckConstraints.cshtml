@@ -1,0 +1,43 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Check Constraints";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Naam</th>
+            <th>Soort</th>
+            <th>Categorie</th>
+            <th>Eis</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var animal in Model)
+        {
+            foreach (var constraint in animal.Constraints)
+            {
+                <tr>
+                    <td>@animal.Animal</td>
+                    <td>@animal.Species</td>
+                    <td>@animal.Category</td>
+                    <td>@constraint.Key</td>
+                    <td>
+                        @if (constraint.Value)
+                        {
+                            <span class="text-success">✔ Voldoet</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">✘ Voldoet niet</span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

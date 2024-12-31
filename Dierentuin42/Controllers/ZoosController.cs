@@ -244,9 +244,10 @@ namespace Dierentuin42.Controllers
         }
 
 
-        private bool ZooExists(int id)
+        public bool ZooExists(int id)
         {
             return _context.Zoo.Any(e => e.Id == id);
         }
+
     }
 }

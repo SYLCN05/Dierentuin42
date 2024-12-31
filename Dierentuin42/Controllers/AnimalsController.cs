@@ -34,8 +34,7 @@ namespace Dierentuin42.Controllers
     string filterEnclosure,
     string filterSpaceRequirement,
     string filterSecurity,
-    string sortColumn,
-    string sortOrder)
+    string sortColumn)
         {
             var animals = _context.Animal
                 .Include(a => a.Category)
@@ -142,16 +141,6 @@ namespace Dierentuin42.Controllers
                     (animalSize.HasValue && a.AnimalSize == animalSize.Value) ||
                     (spaceRequirement.HasValue && a.spaceRequirement >= spaceRequirement.Value)
                 );
-            }
-
-
-            // SORTEREN
-            if (!string.IsNullOrEmpty(sortColumn))
-            {
-                var param = Expression.Parameter(typeof(Animal), "x");
-                var property = Expression.Property(param, sortColumn);
-                var lambda = Expression.Lambda<Func<Animal, object>>(Expression.Convert(property, typeof(object)), param);
-                animals = sortOrder == "asc" ? animals.OrderBy(lambda) : animals.OrderByDescending(lambda);
             }
 
             // UNIEKE WAARDES VOOR FILTER, IK HEB DIT ALLEMAAL ALS VIEWDATA GEDAAN OMDAT IK DIT OOK ZAG IN DE BRIGHTSPACE MAAR IK WEET DAT VIEWBAG OOK EEN OPTIE IS.
@@ -286,8 +275,38 @@ namespace Dierentuin42.Controllers
             {
                 try
                 {
-                    _context.Update(animal);
-                    await _context.SaveChangesAsync();
+                    if (animal.EnclosureId.HasValue)
+                    {
+                        var enclosure = await _context.Enclosure
+                            .Where(e => e.Id == animal.EnclosureId)
+                            .FirstOrDefaultAsync();
+
+                        if (enclosure != null)
+                        {
+                            // BEREKENING VAN TOTALE RUIMTE IN GEBRUIK
+                            var totalSpaceOccupied = await _context.Animal
+                                .Where(a => a.EnclosureId == animal.EnclosureId && a.Id != animal.Id)
+                                .SumAsync(a => a.spaceRequirement);
+
+                            double remainingSpace = enclosure.Size - totalSpaceOccupied;
+
+                            if (remainingSpace < animal.spaceRequirement)
+                            {
+                                ModelState.AddModelError("spaceRequirement", $"Te weinig ruimte in gekozen verblijf (beschikbaar: {Math.Round(remainingSpace, 2)}m²/{enclosure.Size}m²)");
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("EnclosureId", "Geselecteerde verblijf niet gevonden");
+                        }
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        _context.Update(animal);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -300,12 +319,13 @@ namespace Dierentuin42.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name", animal.CategoryId);
             ViewData["EnclosureId"] = new SelectList(_context.Set<Enclosure>(), "Id", "Name", animal.EnclosureId);
             return View(animal);
         }
+
 
         // GET: Animals/Delete/5
         public async Task<IActionResult> Delete(int? id)

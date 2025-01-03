@@ -63,6 +63,19 @@
     <br />
     <br />
     <br />
+    <div class="card d-flex justify-content-center flex-row w-100  " style=" max-height: 620px; max-width:1000px; position:relative; left:250px">
+        <img src="~/Img/f4ec2948-eee8-4298-93b8-7c374e9bf21b.jpg"  class="card-img-top"  alt="..."/>
+        <div class="card-body w-100" >
+            <h3 class="card-title">Categorieën</h3>
+            <p class="card-text text-break">Wist je dat al onze dieren zijn ingedeeld in verschillende categorieën? Klik op de knop hieronder om ze allemaal te ontdekken.</p>
+            <a class="btn btn-primary" asp-controller="Categories" asp-action="Index">Klik hier</a>
+        </div>
+    </div>
+    <br />
+    <br />
+    <footer>
+      @await Html.PartialAsync("_Footer")
+    </footer>
 </body>
 
 </html>

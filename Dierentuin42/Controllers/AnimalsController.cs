@@ -436,5 +436,10 @@ namespace Dierentuin42.Controllers
             return View(results);
         }
 
+        public IActionResult Footer() 
+        {
+            return PartialView("_Footer");
+        }
+
     }
 }

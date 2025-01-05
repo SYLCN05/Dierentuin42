@@ -158,6 +158,7 @@ namespace Dierentuin42.Models
                 { "Geldig activiteitenpatroon", HasValidActivityPattern() },
                 { "Beveiligingsniveau aanwezig", HasValidSecurityLevel() }
             };
+
             return constraints;
         }
 

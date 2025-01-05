@@ -425,14 +425,6 @@ namespace Dierentuin42.Controllers
                 .Include(a => a.Enclosure)
                 .ToListAsync();
 
-            //var results = animals.Select(a => new
-            //{
-            //    Animal = a.Name,
-            //    Species = a.Species,
-            //    Category = a.Category.Name,
-            //    Constraints = a.CheckAllConstraints()
-            //}).ToList();
-
             var results = animals.Where(a => a != null).Select(a => new
             {
                 Animal = a.Name,

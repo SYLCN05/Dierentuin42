@@ -342,5 +342,11 @@ namespace Dierentuin42.Controllers
         {
             return _context.Enclosure.Any(e => e.Id == id);
         }
+
+        public IActionResult Footer() 
+        { 
+            return PartialView("_Footer"); 
+        
+        }
     }
 }

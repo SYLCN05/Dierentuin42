@@ -2,20 +2,16 @@
 
 
 
-###
-
-
-###
 
 GET {{Dierentuin42_HostAddress}}/api/animals
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals/search?name=testnameveranderdtest
+GET {{Dierentuin42_HostAddress}}/api/animals/0
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals
+GET {{Dierentuin42_HostAddress}}/api/animals/search?name=string&species=string&category=string&prey=string&enclosure=string
 
 ###
 
@@ -23,46 +19,21 @@ POST {{Dierentuin42_HostAddress}}/api/animals
 Content-Type: application/json
 
 {
-    "name": "Leotest123",
-    "species": "Lion",
-    "animalSize": 1,
-    "animalDiet": 2,
-    "animalActivityPattern": 0,
-    "prey": "Zebra, Antelope",
-    "spaceRequirement": 20,
-    "securityRequirement": 2
+  //Animal
 }
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals/293
-
-###
-
-DELETE {{Dierentuin42_HostAddress}}/api/animals/22
-
-###
-
-GET {{Dierentuin42_HostAddress}}/api/animals/search?name=Relatietest
-
-###
-
-PUT {{Dierentuin42_HostAddress}}/api/animals/17
+PUT {{Dierentuin42_HostAddress}}/api/animals/0
 Content-Type: application/json
 
 {
-  "id": 17,
-  "name": "Leotest123",
-  "species": "Lion",
-  "categoryId": 3,
-  "animalSize": 2,
-  "animalDiet": 1,
-  "animalActivityPattern": 2,
-  "prey": "",
-  "enclosureId": 3,
-  "spaceRequirement": 0.01,
-  "securityRequirement": 1
+  //Animal
 }
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/animals/0
 
 ###
 
@@ -70,7 +41,11 @@ GET {{Dierentuin42_HostAddress}}/api/categories
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/categories/82
+GET {{Dierentuin42_HostAddress}}/api/categories/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/categories/search?name=string
 
 ###
 
@@ -78,47 +53,33 @@ POST {{Dierentuin42_HostAddress}}/api/categories
 Content-Type: application/json
 
 {
-  "name": "Checkenofapiwerkt2",
-  "animals": []
+  //Category
 }
 
 ###
 
-PUT {{Dierentuin42_HostAddress}}/api/categories/81
+PUT {{Dierentuin42_HostAddress}}/api/categories/0
 Content-Type: application/json
 
 {
-  "id": 81,
-  "name": "Checkenofapikanaanpassen3",
-  "animals": []
+  //Category
 }
 
 ###
 
-DELETE {{Dierentuin42_HostAddress}}/api/categories/81
+DELETE {{Dierentuin42_HostAddress}}/api/categories/0
 
 ###
-
-GET {{Dierentuin42_HostAddress}}/api/categories/search?name=Checkenofapikanaanpassen3
-
-###
-
-GET {{Dierentuin42_HostAddress}}/api/animals/search?name=Aisha&species=Krokodil&category=Toys&size=Microscopic&diet=Carnivore&activity=Nocturnal&prey=Hat&enclosure=Lessie&security=Low
-
-###
-
-GET {{Dierentuin42_HostAddress}}/api/animals
-
-###
-
-
 
 GET {{Dierentuin42_HostAddress}}/api/enclosures
 
 ###
 
+GET {{Dierentuin42_HostAddress}}/api/enclosures/0
 
-GET {{Dierentuin42_HostAddress}}/api/enclosures/238
+###
+
+GET {{Dierentuin42_HostAddress}}/api/enclosures/search?name=string&zoo=string&space=0
 
 ###
 
@@ -126,50 +87,33 @@ POST {{Dierentuin42_HostAddress}}/api/enclosures
 Content-Type: application/json
 
 {
-    "name": "testenofkan2",
-    "zooId": 80,
-    "animals": [],
-    "enclosureClimate": 1,
-    "enclosureHabitatType": 2,
-    "enclosureSecurityLevel": 1,
-    "size": 2000
-
+  //Enclosure
 }
 
 ###
 
-PUT {{Dierentuin42_HostAddress}}/api/enclosures/134
+PUT {{Dierentuin42_HostAddress}}/api/enclosures/0
 Content-Type: application/json
 
-{   
-    "id": 134,
-    "name": "testenofkan2verandert2",
-    "zooId": 77,
-    "animals": [],
-    "enclosureClimate": 1,
-    "enclosureHabitatType": 2,
-    "enclosureSecurityLevel": 1,
-    "size": 2000
+{
+  //Enclosure
 }
 
 ###
 
-DELETE {{Dierentuin42_HostAddress}}/api/enclosures/146
+DELETE {{Dierentuin42_HostAddress}}/api/enclosures/0
 
 ###
-
-GET {{Dierentuin42_HostAddress}}/api/enclosures/search?name=Nora&zoo=Trevion&climate=Temperate&habitat=Desert&security=Medium&space=5908.27
-
-###
-
-
-
 
 GET {{Dierentuin42_HostAddress}}/api/zoos
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/zoos/144
+GET {{Dierentuin42_HostAddress}}/api/zoos/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/zoos/search?name=string
 
 ###
 
@@ -177,56 +121,20 @@ POST {{Dierentuin42_HostAddress}}/api/zoos
 Content-Type: application/json
 
 {
-  "name": "testofpostwerkt",
-  "enclosures": [
-    {
-      "name": "testenofwerkt",
-      "zooId": 137,
-      "zoo": null,
-      "animals": [],
-      "enclosureClimate": 1,
-      "enclosureHabitatType": 3,
-      "enclosureSecurityLevel": 1,
-      "size": 4000.51
-    },
-    {
-      "name": "testenofwerkt2",
-      "zooId": 137,
-      "zoo": null,
-      "animals": [],
-      "enclosureClimate": 2,
-      "enclosureHabitatType": 4,
-      "enclosureSecurityLevel": 2,
-      "size": 3000.51
-    }
-  ]
+  //Zoo
 }
 
 ###
 
-
-
-PUT {{Dierentuin42_HostAddress}}/api/zoos/148
+PUT {{Dierentuin42_HostAddress}}/api/zoos/0
 Content-Type: application/json
 
 {
-  "id": 148,
-  "name": "testofputwerkt2"
-  
+  //Zoo
 }
 
-
-
 ###
 
+DELETE {{Dierentuin42_HostAddress}}/api/zoos/0
 
-###
-
-DELETE {{Dierentuin42_HostAddress}}/api/zoos/164  
-
-###
-
-###
-
-GET {{Dierentuin42_HostAddress}}/api/zoos/search?name=Jaylin
 ###

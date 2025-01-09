@@ -425,16 +425,55 @@ namespace Dierentuin42.Controllers
                 .Include(a => a.Enclosure)
                 .ToListAsync();
 
-            var results = animals.Select(a => new
+            var results = animals.Where(a => a != null).Select(a => new
             {
                 Animal = a.Name,
                 Species = a.Species,
-                Category = a.Category.Name,
+                //Category = a.Category?.Name,
+                Category = a.Category?.Name ?? "No Category",
                 Constraints = a.CheckAllConstraints()
             }).ToList();
 
+
             return View(results);
         }
+
+        public async Task<IActionResult> AutoAssign()
+        {
+            var animals = await _context.Animal.ToListAsync();
+            var enclosures = await _context.Enclosure.ToListAsync();
+
+            if (!enclosures.Any())
+            {
+                Console.WriteLine("Geen verblijven beschikbaar! Controleer de database.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            foreach (var animal in animals)
+            {
+                if (animal.EnclosureId == null)  // Alleen dieren zonder verblijf toewijzen
+                {
+                    var suitableEnclosures = enclosures
+                        .Where(e => e.Size >= animal.spaceRequirement)  // Verblijf moet genoeg ruimte hebben
+                        .Where(e => (int)e.EnclosureSecurityLevel >= (int)animal.SecurityRequirement) // Beveiliging moet minimaal het niveau van het dier hebben
+                        .ToList();
+
+                    if (suitableEnclosures.Any())
+                    {
+                        var selectedEnclosure = suitableEnclosures.First(); // Kies het eerste geschikte verblijf
+                        animal.EnclosureId = selectedEnclosure.Id;
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
+
+
 
         public IActionResult Footer() 
         {

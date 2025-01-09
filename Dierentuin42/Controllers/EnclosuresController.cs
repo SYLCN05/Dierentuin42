@@ -23,19 +23,44 @@ namespace Dierentuin42.Controllers
 
         // GET: Enclosures
         public async Task<IActionResult> Index(
-    string searchText,
-    string filterZoo,
-    Enclosure.Climate? filterClimate,
-    Enclosure.HabitatType? filterHabitatType,
-    Enclosure.SecurityLevel? filterSecurityLevel,
-    string filterName,
-    double? filterSize,
-    string sortColumn,
-    string sortOrder)
+            string searchText,
+            string filterZoo,
+            Enclosure.Climate? filterClimate,
+            Enclosure.HabitatType? filterHabitatType,
+            Enclosure.SecurityLevel? filterSecurityLevel,
+            string filterName,
+            double? filterSize,
+            string sortColumn,
+            string sortOrder)
         {
             var enclosures = _context.Enclosure.Include(e => e.Zoo).AsQueryable();
 
             // FILTEREN OP SPECIFIEKE VELDEN
+            enclosures = ApplyFilters(enclosures, filterZoo, filterName, filterClimate, filterHabitatType,
+                filterSecurityLevel, filterSize);
+
+            // ZOEKEN OP MEERDER VELDEN GELIJKTIJDIG (waarbij enums correct worden behandeld)
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                enclosures = ApplySearchFilter(enclosures, searchText);
+            }
+
+            // UNIEKE WAARDES VOOR FILTER
+            await SetUpViewData();
+
+            return View(await enclosures.ToListAsync());
+        }
+
+        // FILTER LOGICA
+        private IQueryable<Enclosure> ApplyFilters(
+            IQueryable<Enclosure> enclosures,
+            string filterZoo,
+            string filterName,
+            Enclosure.Climate? filterClimate,
+            Enclosure.HabitatType? filterHabitatType,
+            Enclosure.SecurityLevel? filterSecurityLevel,
+            double? filterSize)
+        {
             if (!string.IsNullOrEmpty(filterZoo))
             {
                 enclosures = enclosures.Where(e => e.Zoo.Name == filterZoo);
@@ -66,49 +91,53 @@ namespace Dierentuin42.Controllers
                 enclosures = enclosures.Where(e => e.Size == filterSize);
             }
 
-            // ZOEKEN OP MEERDER VELDEN GELIJKTIJDIG (waarbij enums correct worden behandeld)
-            if (!string.IsNullOrEmpty(searchText))
+            return enclosures;
+        }
+
+        // ZOEKEN OP MEERDER VELDEN
+        private IQueryable<Enclosure> ApplySearchFilter(IQueryable<Enclosure> enclosures, string searchText)
+        {
+            Enclosure.Climate? climate = null;
+            Enclosure.SecurityLevel? securityLevel = null;
+            Enclosure.HabitatType? habitatType = null;
+
+            // Probeer enums te parsen
+            if (Enum.TryParse(searchText, out Enclosure.Climate parsedClimate))
             {
-                Enclosure.Climate? climate = null;
-                Enclosure.SecurityLevel? securityLevel = null;
-                Enclosure.HabitatType? habitatType = null;
-
-                // Probeer enums te parsen
-                if (Enum.TryParse(searchText, out Enclosure.Climate parsedClimate))
-                {
-                    climate = parsedClimate;
-                }
-
-                if (Enum.TryParse(searchText, out Enclosure.SecurityLevel parsedSecurityLevel))
-                {
-                    securityLevel = parsedSecurityLevel;
-                }
-
-                if (Enum.TryParse(searchText, out Enclosure.HabitatType parsedHabitatType))
-                {
-                    habitatType = parsedHabitatType;
-                }
-
-                enclosures = enclosures.Where(e =>
-                    e.Name.Contains(searchText) ||
-                    e.Zoo.Name.Contains(searchText) ||
-                    (climate.HasValue && e.EnclosureClimate == climate.Value) ||
-                    (securityLevel.HasValue && e.EnclosureSecurityLevel == securityLevel.Value) ||
-                    (habitatType.HasValue && e.EnclosureHabitatType == habitatType.Value) ||
-                    e.Size.ToString().Contains(searchText)
-                );
+                climate = parsedClimate;
             }
 
-            // UNIEKE WAARDES VOOR FILTER
+            if (Enum.TryParse(searchText, out Enclosure.SecurityLevel parsedSecurityLevel))
+            {
+                securityLevel = parsedSecurityLevel;
+            }
+
+            if (Enum.TryParse(searchText, out Enclosure.HabitatType parsedHabitatType))
+            {
+                habitatType = parsedHabitatType;
+            }
+
+            return enclosures.Where(e =>
+                e.Name.Contains(searchText) ||
+                e.Zoo.Name.Contains(searchText) ||
+                (climate.HasValue && e.EnclosureClimate == climate.Value) ||
+                (securityLevel.HasValue && e.EnclosureSecurityLevel == securityLevel.Value) ||
+                (habitatType.HasValue && e.EnclosureHabitatType == habitatType.Value) ||
+                e.Size.ToString().Contains(searchText)
+            );
+        }
+
+        // VIEWDATA INSTELLEN VOOR FILTER
+        private async Task SetUpViewData()
+        {
             ViewData["Zoos"] = await _context.Zoo.ToListAsync();
             ViewData["Names"] = await _context.Enclosure.Select(e => e.Name).Distinct().ToListAsync();
             ViewData["Sizes"] = await _context.Enclosure.Select(e => e.Size).Distinct().ToListAsync();
             ViewData["Climates"] = Enum.GetValues(typeof(Enclosure.Climate)).Cast<Enclosure.Climate>().ToList();
             ViewData["HabitatTypes"] = Enum.GetValues(typeof(Enclosure.HabitatType)).Cast<Enclosure.HabitatType>().ToList();
             ViewData["SecurityLevels"] = Enum.GetValues(typeof(Enclosure.SecurityLevel)).Cast<Enclosure.SecurityLevel>().ToList();
-
-            return View(await enclosures.ToListAsync());
         }
+
 
 
         // GET: Enclosures/Details/5

@@ -7,11 +7,11 @@ GET {{Dierentuin42_HostAddress}}/api/animals
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals/0
+GET {{Dierentuin42_HostAddress}}/api/animals/id
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/animals/search?name=string&species=string&category=string&prey=string&enclosure=string
+GET {{Dierentuin42_HostAddress}}/api/animals/search?name=Nicholas&species=Kangoeroe&category=Gorczany&size=Small&diet=Herbivore&activity=Nocturnal&prey=Towels&enclosure=Glenna&security=Low
 
 ###
 
@@ -19,21 +19,41 @@ POST {{Dierentuin42_HostAddress}}/api/animals
 Content-Type: application/json
 
 {
-  //Animal
+  "name": "test", 
+  "species": "testspecies", 
+  "categoryId": 1481,  
+  "animalSize": 2, 
+  "animalDiet": 2, 
+  "animalActivityPattern": 1, 
+  "prey": "testprey", 
+  "enclosureId": 1497,
+  "spaceRequirement": 345.76,
+  "securityRequirement": 1 
+
 }
 
 ###
 
-PUT {{Dierentuin42_HostAddress}}/api/animals/0
+PUT {{Dierentuin42_HostAddress}}/api/animals/id
 Content-Type: application/json
 
 {
-  //Animal
+  "id": int id,
+  "name": "testveranderen", 
+  "species": "testspecies", 
+  "categoryId": 1481,  
+  "animalSize": 2, 
+  "animalDiet": 2, 
+  "animalActivityPattern": 1, 
+  "prey": "testprey", 
+  "enclosureId": 1497,
+  "spaceRequirement": 345.76,
+  "securityRequirement": 1 
 }
 
 ###
 
-DELETE {{Dierentuin42_HostAddress}}/api/animals/0
+DELETE {{Dierentuin42_HostAddress}}/api/animals/id
 
 ###
 
@@ -41,7 +61,7 @@ GET {{Dierentuin42_HostAddress}}/api/categories
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/categories/0
+GET {{Dierentuin42_HostAddress}}/api/categories/id
 
 ###
 
@@ -53,21 +73,68 @@ POST {{Dierentuin42_HostAddress}}/api/categories
 Content-Type: application/json
 
 {
-  //Category
+    "name": "testcategorie",
+    "animals":
+    [
+      {
+      "name": "test", 
+      "species": "testspecies", 
+      "animalSize": 2, 
+      "animalDiet": 2, 
+      "animalActivityPattern": 1, 
+      "prey": "testprey", 
+      "spaceRequirement": 345.76,
+      "securityRequirement": 1 
+      },
+      {
+      "name": "test2", 
+      "species": "testspecies2", 
+      "animalSize": 2, 
+      "animalDiet": 2, 
+      "animalActivityPattern": 1, 
+      "prey": "testprey", 
+      "spaceRequirement": 345.76,
+      "securityRequirement": 1 
+      }
+    ]
 }
 
 ###
 
-PUT {{Dierentuin42_HostAddress}}/api/categories/0
+PUT {{Dierentuin42_HostAddress}}/api/categories/1482
 Content-Type: application/json
 
 {
-  //Category
+    "id":  1482,
+    "name": "testcategorieveranderen",
+    "animals":
+    [
+      {
+      "name": "test", 
+      "species": "testspeciesveranderen", 
+      "animalSize": 2, 
+      "animalDiet": 2, 
+      "animalActivityPattern": 1, 
+      "prey": "testprey", 
+      "spaceRequirement": 345.76,
+      "securityRequirement": 1 
+      },
+      {
+      "name": "test2", 
+      "species": "testspecies2veranderen", 
+      "animalSize": 2, 
+      "animalDiet": 2, 
+      "animalActivityPattern": 1, 
+      "prey": "testprey", 
+      "spaceRequirement": 345.76,
+      "securityRequirement": 1 
+      }
+    ]
 }
 
 ###
 
-DELETE {{Dierentuin42_HostAddress}}/api/categories/0
+DELETE {{Dierentuin42_HostAddress}}/api/categories/id
 
 ###
 
@@ -75,11 +142,11 @@ GET {{Dierentuin42_HostAddress}}/api/enclosures
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/enclosures/0
+GET {{Dierentuin42_HostAddress}}/api/enclosures/id
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/enclosures/search?name=string&zoo=string&space=0
+GET {{Dierentuin42_HostAddress}}/api/enclosures/search?name=Greyson&zoo=Lessie&climate=Temperate&habitat=Grassland&security=Medium&space=8494.12
 
 ###
 
@@ -87,21 +154,34 @@ POST {{Dierentuin42_HostAddress}}/api/enclosures
 Content-Type: application/json
 
 {
-  //Enclosure
+    "name": "test",
+    "zooId": 891,
+    "animals": [],
+    "enclosureClimate": 1,
+    "enclosureHabitatType": 2,
+    "enclosureSecurityLevel": 1,
+    "size": 2000
 }
 
 ###
 
-PUT {{Dierentuin42_HostAddress}}/api/enclosures/0
+PUT {{Dierentuin42_HostAddress}}/api/enclosures/1503
 Content-Type: application/json
 
 {
-  //Enclosure
+    "id": 1503,
+    "name": "testveranderen",
+    "zooId": 891,
+    "animals": [],
+    "enclosureClimate": 1,
+    "enclosureHabitatType": 2,
+    "enclosureSecurityLevel": 1,
+    "size": 2002
 }
 
 ###
 
-DELETE {{Dierentuin42_HostAddress}}/api/enclosures/0
+DELETE {{Dierentuin42_HostAddress}}/api/enclosures/1503
 
 ###
 
@@ -109,7 +189,7 @@ GET {{Dierentuin42_HostAddress}}/api/zoos
 
 ###
 
-GET {{Dierentuin42_HostAddress}}/api/zoos/0
+GET {{Dierentuin42_HostAddress}}/api/zoos/id
 
 ###
 
@@ -119,22 +199,67 @@ GET {{Dierentuin42_HostAddress}}/api/zoos/search?name=string
 
 POST {{Dierentuin42_HostAddress}}/api/zoos
 Content-Type: application/json
-
 {
-  //Zoo
+  "name": "test",
+  "enclosures": [
+    {
+      "name": "test",
+      "zooId": 137,
+      "zoo": null,
+      "animals": [],
+      "enclosureClimate": 1,
+      "enclosureHabitatType": 3,
+      "enclosureSecurityLevel": 1,
+      "size": 4000.51
+    },
+    {
+      "name": "test2",
+      "zooId": 137,
+      "zoo": null,
+      "animals": [],
+      "enclosureClimate": 2,
+      "enclosureHabitatType": 4,
+      "enclosureSecurityLevel": 2,
+      "size": 3000.51
+    }
+  ]
 }
+
 
 ###
 
-PUT {{Dierentuin42_HostAddress}}/api/zoos/0
+PUT {{Dierentuin42_HostAddress}}/api/zoos/894
 Content-Type: application/json
 
 {
-  //Zoo
+  "id": 894,
+  "name": "testveranderen",
+  "enclosures": [
+    {
+      "name": "test",
+      "zooId": 137,
+      "zoo": null,
+      "animals": [],
+      "enclosureClimate": 1,
+      "enclosureHabitatType": 3,
+      "enclosureSecurityLevel": 1,
+      "size": 4000.51
+    },
+    {
+      "name": "test2",
+      "zooId": 137,
+      "zoo": null,
+      "animals": [],
+      "enclosureClimate": 2,
+      "enclosureHabitatType": 4,
+      "enclosureSecurityLevel": 2,
+      "size": 3000.51
+    }
+  ]
 }
 
 ###
 
-DELETE {{Dierentuin42_HostAddress}}/api/zoos/0
+DELETE {{Dierentuin42_HostAddress}}/api/zoos/id
 
 ###

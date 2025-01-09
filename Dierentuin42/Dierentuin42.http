@@ -2,8 +2,139 @@
 
 
 
+
+GET {{Dierentuin42_HostAddress}}/api/animals
+
 ###
 
-GET {{Dierentuin42_HostAddress}}/animals/index/{id}
+GET {{Dierentuin42_HostAddress}}/api/animals/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/animals/search?name=string&species=string&category=string&prey=string&enclosure=string
+
+###
+
+POST {{Dierentuin42_HostAddress}}/api/animals
+Content-Type: application/json
+
+{
+  //Animal
+}
+
+###
+
+PUT {{Dierentuin42_HostAddress}}/api/animals/0
+Content-Type: application/json
+
+{
+  //Animal
+}
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/animals/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/categories
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/categories/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/categories/search?name=string
+
+###
+
+POST {{Dierentuin42_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  //Category
+}
+
+###
+
+PUT {{Dierentuin42_HostAddress}}/api/categories/0
+Content-Type: application/json
+
+{
+  //Category
+}
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/categories/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/enclosures
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/enclosures/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/enclosures/search?name=string&zoo=string&space=0
+
+###
+
+POST {{Dierentuin42_HostAddress}}/api/enclosures
+Content-Type: application/json
+
+{
+  //Enclosure
+}
+
+###
+
+PUT {{Dierentuin42_HostAddress}}/api/enclosures/0
+Content-Type: application/json
+
+{
+  //Enclosure
+}
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/enclosures/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/zoos
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/zoos/0
+
+###
+
+GET {{Dierentuin42_HostAddress}}/api/zoos/search?name=string
+
+###
+
+POST {{Dierentuin42_HostAddress}}/api/zoos
+Content-Type: application/json
+
+{
+  //Zoo
+}
+
+###
+
+PUT {{Dierentuin42_HostAddress}}/api/zoos/0
+Content-Type: application/json
+
+{
+  //Zoo
+}
+
+###
+
+DELETE {{Dierentuin42_HostAddress}}/api/zoos/0
 
 ###

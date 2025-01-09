@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Dierentuin42.Data;
 using Dierentuin42.Models;
 using Dierentuin42.Migrations;
+using System.Linq.Expressions;
 
 namespace Dierentuin42.Controllers
 {
@@ -21,13 +22,123 @@ namespace Dierentuin42.Controllers
         }
 
         // GET: Enclosures
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string searchText,
+            string filterZoo,
+            Enclosure.Climate? filterClimate,
+            Enclosure.HabitatType? filterHabitatType,
+            Enclosure.SecurityLevel? filterSecurityLevel,
+            string filterName,
+            double? filterSize,
+            string sortColumn,
+            string sortOrder)
         {
-            var enclosures = await _context.Enclosure
-                                  .Include(e => e.Zoo) 
-                                  .ToListAsync();
-            return View(enclosures);
+            var enclosures = _context.Enclosure.Include(e => e.Zoo).AsQueryable();
+
+            // FILTEREN OP SPECIFIEKE VELDEN
+            enclosures = ApplyFilters(enclosures, filterZoo, filterName, filterClimate, filterHabitatType,
+                filterSecurityLevel, filterSize);
+
+            // ZOEKEN OP MEERDER VELDEN GELIJKTIJDIG (waarbij enums correct worden behandeld)
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                enclosures = ApplySearchFilter(enclosures, searchText);
+            }
+
+            // UNIEKE WAARDES VOOR FILTER
+            await SetUpViewData();
+
+            return View(await enclosures.ToListAsync());
         }
+
+        // FILTER LOGICA
+        private IQueryable<Enclosure> ApplyFilters(
+            IQueryable<Enclosure> enclosures,
+            string filterZoo,
+            string filterName,
+            Enclosure.Climate? filterClimate,
+            Enclosure.HabitatType? filterHabitatType,
+            Enclosure.SecurityLevel? filterSecurityLevel,
+            double? filterSize)
+        {
+            if (!string.IsNullOrEmpty(filterZoo))
+            {
+                enclosures = enclosures.Where(e => e.Zoo.Name == filterZoo);
+            }
+
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                enclosures = enclosures.Where(e => e.Name.Equals(filterName));
+            }
+
+            if (filterClimate.HasValue)
+            {
+                enclosures = enclosures.Where(e => e.EnclosureClimate == filterClimate.Value);
+            }
+
+            if (filterHabitatType.HasValue)
+            {
+                enclosures = enclosures.Where(e => e.EnclosureHabitatType == filterHabitatType.Value);
+            }
+
+            if (filterSecurityLevel.HasValue)
+            {
+                enclosures = enclosures.Where(e => e.EnclosureSecurityLevel == filterSecurityLevel.Value);
+            }
+
+            if (filterSize.HasValue)
+            {
+                enclosures = enclosures.Where(e => e.Size == filterSize);
+            }
+
+            return enclosures;
+        }
+
+        // ZOEKEN OP MEERDER VELDEN
+        private IQueryable<Enclosure> ApplySearchFilter(IQueryable<Enclosure> enclosures, string searchText)
+        {
+            Enclosure.Climate? climate = null;
+            Enclosure.SecurityLevel? securityLevel = null;
+            Enclosure.HabitatType? habitatType = null;
+
+            // Probeer enums te parsen
+            if (Enum.TryParse(searchText, out Enclosure.Climate parsedClimate))
+            {
+                climate = parsedClimate;
+            }
+
+            if (Enum.TryParse(searchText, out Enclosure.SecurityLevel parsedSecurityLevel))
+            {
+                securityLevel = parsedSecurityLevel;
+            }
+
+            if (Enum.TryParse(searchText, out Enclosure.HabitatType parsedHabitatType))
+            {
+                habitatType = parsedHabitatType;
+            }
+
+            return enclosures.Where(e =>
+                e.Name.Contains(searchText) ||
+                e.Zoo.Name.Contains(searchText) ||
+                (climate.HasValue && e.EnclosureClimate == climate.Value) ||
+                (securityLevel.HasValue && e.EnclosureSecurityLevel == securityLevel.Value) ||
+                (habitatType.HasValue && e.EnclosureHabitatType == habitatType.Value) ||
+                e.Size.ToString().Contains(searchText)
+            );
+        }
+
+        // VIEWDATA INSTELLEN VOOR FILTER
+        private async Task SetUpViewData()
+        {
+            ViewData["Zoos"] = await _context.Zoo.ToListAsync();
+            ViewData["Names"] = await _context.Enclosure.Select(e => e.Name).Distinct().ToListAsync();
+            ViewData["Sizes"] = await _context.Enclosure.Select(e => e.Size).Distinct().ToListAsync();
+            ViewData["Climates"] = Enum.GetValues(typeof(Enclosure.Climate)).Cast<Enclosure.Climate>().ToList();
+            ViewData["HabitatTypes"] = Enum.GetValues(typeof(Enclosure.HabitatType)).Cast<Enclosure.HabitatType>().ToList();
+            ViewData["SecurityLevels"] = Enum.GetValues(typeof(Enclosure.SecurityLevel)).Cast<Enclosure.SecurityLevel>().ToList();
+        }
+
+
 
         // GET: Enclosures/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -127,12 +238,13 @@ namespace Dierentuin42.Controllers
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Selected = enclosure.Animals.Any(animal => animal.Id == a.Id)
+                    Selected = enclosure.Animals.Any(animal => animal.Id == a.Id) // Selecteer dieren die al gekoppeld zijn
                 })
                 .ToList();
 
             return View(enclosure);
         }
+
 
         // POST: Enclosures/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -160,8 +272,12 @@ namespace Dierentuin42.Controllers
                         return NotFound();
                     }
 
-                    // Update de enclosure-eigenschappen
+                    // Werk de bestaande enclosure bij
                     existingEnclosure.Name = enclosure.Name;
+                    existingEnclosure.EnclosureClimate = enclosure.EnclosureClimate;
+                    existingEnclosure.EnclosureHabitatType = enclosure.EnclosureHabitatType;
+                    existingEnclosure.EnclosureSecurityLevel = enclosure.EnclosureSecurityLevel;
+                    existingEnclosure.Size = enclosure.Size;
 
                     // Werk de dieren bij
                     existingEnclosure.Animals.Clear();
@@ -172,7 +288,7 @@ namespace Dierentuin42.Controllers
                             var animal = await _context.Animal.FindAsync(animalId);
                             if (animal != null)
                             {
-                                existingEnclosure.Animals.Add(animal);
+                                existingEnclosure.Animals.Add(animal); // Voeg de geselecteerde dieren toe
                             }
                         }
                     }
@@ -200,15 +316,16 @@ namespace Dierentuin42.Controllers
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Selected = selectedAnimalIds.Contains(a.Id)
+                    Selected = selectedAnimalIds.Contains(a.Id) // Markeer geselecteerde dieren
                 })
                 .ToList();
 
             return View(enclosure);
         }
 
-            // GET: Enclosures/Delete/5
-            public async Task<IActionResult> Delete(int? id)
+
+        // GET: Enclosures/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -216,6 +333,7 @@ namespace Dierentuin42.Controllers
             }
 
             var enclosure = await _context.Enclosure
+                .Include(e => e.Animals)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (enclosure == null)
             {
@@ -230,19 +348,34 @@ namespace Dierentuin42.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var enclosure = await _context.Enclosure.FindAsync(id);
+            var enclosure = await _context.Enclosure
+                .Include(e => e.Animals)  
+                .FirstOrDefaultAsync(e => e.Id == id);
+
             if (enclosure != null)
             {
+                foreach (var animal in enclosure.Animals)
+                {
+                    animal.EnclosureId = null;  
+                }
+
                 _context.Enclosure.Remove(enclosure);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool EnclosureExists(int id)
         {
             return _context.Enclosure.Any(e => e.Id == id);
+        }
+
+        public IActionResult Footer() 
+        { 
+            return PartialView("_Footer"); 
+        
         }
     }
 }

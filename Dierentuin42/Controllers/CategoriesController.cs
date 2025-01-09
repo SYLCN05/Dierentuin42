@@ -20,11 +20,44 @@ namespace Dierentuin42.Controllers
             _context = context;
         }
 
-        // GET: Categories
-        public async Task<IActionResult> Index()
+        // GET: Categories (ZOEKEN EN FILTEREN)
+        public async Task<IActionResult> Index(string searchText, string filterName)
         {
-            return View(await _context.Category.ToListAsync());
+            var categories = await GetFilteredCategoriesAsync(searchText, filterName);
+
+            await SetCategoryNamesForViewDataAsync();
+
+            return View(categories);
         }
+
+        private async Task<List<Category>> GetFilteredCategoriesAsync(string searchText, string filterName)
+        {
+            var categoriesQuery = _context.Category.AsQueryable();
+
+            // ZOEKEN OP CATEGORIENAMEN
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                categoriesQuery = categoriesQuery.Where(c => c.Name.Contains(searchText));
+            }
+
+            // FILTEREN OP CATEGORIENAMEN
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                categoriesQuery = categoriesQuery.Where(c => c.Name == filterName);
+            }
+
+            return await categoriesQuery.ToListAsync();
+        }
+
+        private async Task SetCategoryNamesForViewDataAsync()
+        {
+            ViewData["CategoryNames"] = await _context.Category
+                .Select(c => c.Name)
+                .Distinct()
+                .ToListAsync();
+        }
+
+
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -104,7 +137,6 @@ namespace Dierentuin42.Controllers
                 return NotFound();
             }
 
-            // Haal de categorie op inclusief de gekoppelde dieren
             var category = await _context.Category
                 .Include(c => c.Animals)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -114,16 +146,14 @@ namespace Dierentuin42.Controllers
                 return NotFound();
             }
 
-            // Haal alle dieren op uit de database
             var allAnimals = await _context.Animal.ToListAsync();
 
-            // Stel de ViewBag samen voor de beschikbare dieren
             ViewBag.AvailableAnimals = allAnimals
                 .Select(a => new SelectListItem
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Selected = category.Animals.Any(animal => animal.Id == a.Id) // Controleer hier
+                    Selected = category.Animals.Any(animal => animal.Id == a.Id) 
                 })
                 .ToList();
 
@@ -155,10 +185,8 @@ namespace Dierentuin42.Controllers
                         return NotFound();
                     }
 
-                    // Update de categorie-eigenschappen
                     existingCategory.Name = category.Name;
 
-                    // Update de gekoppelde dieren
                     existingCategory.Animals.Clear();
                     if (selectedAnimalIds != null && selectedAnimalIds.Any())
                     {
@@ -210,7 +238,9 @@ namespace Dierentuin42.Controllers
             }
 
             var category = await _context.Category
+                .Include(c => c.Animals)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (category == null)
             {
                 return NotFound();
@@ -224,19 +254,34 @@ namespace Dierentuin42.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Category.FindAsync(id);
+            var category = await _context.Category
+                .Include(c => c.Animals)  
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (category != null)
             {
+                foreach (var animal in category.Animals)
+                {
+                    animal.CategoryId = null;  
+                }
+
                 _context.Category.Remove(category);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool CategoryExists(int id)
         {
             return _context.Category.Any(e => e.Id == id);
         }
+
+        public IActionResult Footer() 
+        {
+            return PartialView("_Footer");
+        }
+
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Dierentuin42.Data;
 using Dierentuin42.Models;
 using Dierentuin42.Migrations;
+using System.Linq.Expressions;
 
 namespace Dierentuin42.Controllers
 {
@@ -20,11 +21,20 @@ namespace Dierentuin42.Controllers
             _context = context;
         }
 
-        // GET: Zoos
-        public async Task<IActionResult> Index()
+        // GET: Zoos (ZOEKEN)
+        public async Task<IActionResult> Index(string searchText)
         {
-            return View(await _context.Zoo.ToListAsync());
+            var zoos = _context.Zoo.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                zoos = zoos.Where(z => z.Name.Contains(searchText));
+            }
+
+            return View(await zoos.ToListAsync());
         }
+
+
 
         // GET: Zoos/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -140,7 +150,7 @@ namespace Dierentuin42.Controllers
                 try
                 {
                     var existingZoo = await _context.Zoo
-                        .Include (z => z.Enclosures)
+                        .Include(z => z.Enclosures)
                         .FirstOrDefaultAsync(z => z.Id == id);
 
                     if (existingZoo == null)
@@ -151,7 +161,7 @@ namespace Dierentuin42.Controllers
                     existingZoo.Name = zoo.Name;
 
                     existingZoo.Enclosures.Clear();
-                   
+
                     if (selectedEnclosureIds != null && selectedEnclosureIds.Any())
                     {
                         foreach (var enclolsureId in selectedEnclosureIds)
@@ -179,7 +189,7 @@ namespace Dierentuin42.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.AvailableAnimals = _context.Enclosure
+            ViewBag.AvailableEnclosures = _context.Enclosure
                 .Select(e => new SelectListItem
                 {
                     Value = e.Id.ToString(),
@@ -200,6 +210,7 @@ namespace Dierentuin42.Controllers
             }
 
             var zoo = await _context.Zoo
+                .Include(z => z.Enclosures)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (zoo == null)
             {
@@ -214,19 +225,34 @@ namespace Dierentuin42.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var zoo = await _context.Zoo.FindAsync(id);
+            var zoo = await _context.Zoo
+                .Include(z => z.Enclosures)  
+                .FirstOrDefaultAsync(z => z.Id == id);
+
             if (zoo != null)
             {
+                foreach (var enclosure in zoo.Enclosures)
+                {
+                    enclosure.ZooId = null;  
+                }
+
                 _context.Zoo.Remove(zoo);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ZooExists(int id)
+
+        public bool ZooExists(int id)
         {
             return _context.Zoo.Any(e => e.Id == id);
         }
+        
+        public IActionResult Footer() 
+        {
+            return PartialView();
+        }
+
     }
 }

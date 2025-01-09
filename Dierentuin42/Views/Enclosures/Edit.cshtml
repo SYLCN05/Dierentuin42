@@ -1,80 +1,191 @@
 ﻿@model Dierentuin42.Models.Enclosure
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Bewerk Enclosure";
 }
 
-<h1>Edit</h1>
+<h1 class="text-center text-warning mt-5">Bewerk Enclosure</h1>
+<hr class="my-4" style="border: 0; border-top: 3px solid #ffcc00; margin: 5px 0;">
 
-<h4>Enclosure</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="bg-white p-4 rounded shadow-sm border">
+                <h5 class="text-warning text-center mb-4">Bewerk Gegevens van het Enclosure</h5>
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- NAAM -->
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- DIEREN (MULTIPLE SELECT) -->
+                    <div class="form-group">
+                        <label asp-for="Animals" class="control-label"></label>
+                        <select id="SelectedAnimalIds" name="selectedAnimalIds" multiple class="form-control">
+                            @foreach (var animal in ViewBag.AvailableAnimals)
+                            {
+                                <option value="@animal.Value">@animal.Text</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Animals" class="text-danger"></span>
+                    </div>
+
+                    <!-- KLIMAAT -->
+                    <div class="form-group">
+                        <label asp-for="EnclosureClimate" class="control-label"></label>
+                        <select asp-for="EnclosureClimate" class="form-control">
+                            @foreach (var climate in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.Climate)).Cast<Dierentuin42.Models.Enclosure.Climate>())
+                            {
+                                <option value="@climate">@climate</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EnclosureClimate" class="text-danger"></span>
+                    </div>
+
+                    <!-- HABITAT TYPE (MULTIPLE SELECT) -->
+                    <div class="form-group">
+                        <label asp-for="EnclosureHabitatType" class="control-label"></label>
+                        <select asp-for="EnclosureHabitatType" class="form-control" multiple>
+                            @foreach (var habitat in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.HabitatType)).Cast<Dierentuin42.Models.Enclosure.HabitatType>())
+                            {
+                                <option value="@habitat">@habitat</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EnclosureHabitatType" class="text-danger"></span>
+                    </div>
+
+                    <!-- VEILIGHEIDSNIVEAU -->
+                    <div class="form-group">
+                        <label asp-for="EnclosureSecurityLevel" class="control-label"></label>
+                        <select asp-for="EnclosureSecurityLevel" class="form-control">
+                            @foreach (var security in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.SecurityLevel)).Cast<Dierentuin42.Models.Enclosure.SecurityLevel>())
+                            {
+                                <option value="@security">@security</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EnclosureSecurityLevel" class="text-danger"></span>
+                    </div>
+
+                    <!-- GROOTTE -->
+                    <div class="form-group">
+                        <label asp-for="Size" class="control-label"></label>
+                        <input asp-for="Size" class="form-control" />
+                        <span asp-validation-for="Size" class="text-danger"></span>
+                    </div>
+
+                    <hr class="my-3" style="border: 0; border-top: 3px solid #ffcc00; margin: 5px 0;" />
+
+                    <!-- OPSLAAN KNOP EN TERUG OVERZICHT -->
+                    <div class="form-group text-center mb-4">
+                        <div class="d-flex justify-content-between">
+                            <div class="w-48">
+                                <button type="submit" class="btn btn-custom btn-lg w-100 shadow-lg d-flex justify-content-center align-items-center">
+                                    <i class="fas fa-edit" style="margin-right: 8px;"></i> Opslaan
+                                </button>
+                            </div>
+                            <div class="w-48">
+                                <a asp-action="Index" class="btn btn-secondary btn-lg w-100 shadow-lg">
+                                    <i class="fas fa-arrow-left"></i> Terug naar overzicht
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="SelectedAnimalIds">Select Animals</label>
-                <select id="SelectedAnimalIds" name="selectedAnimalIds" multiple class="form-control">
-                    @foreach (var animal in ViewBag.AvailableAnimals)
-                    {
-                        <option value="@animal.Value">@animal.Text</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="EnclosureClimate" class="control-label"></label>
-                <br />
-                <select id="EnclosureClimate" name="EnclosureClimate">
-                    @foreach (var climate in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.Climate)).Cast<Dierentuin42.Models.Enclosure.Climate>())
-                    {
-                        <option value="@climate">@climate</option>
-                    }
-                </select>
-                <span asp-validation-for="EnclosureClimate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EnclosureHabitatType" class="control-label"></label>
-                <select id="EnclosureHabitatType" name="EnclosureHabitatType" multiple class="form-control">
-                    @foreach (var habitat in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.HabitatType)).Cast<Dierentuin42.Models.Enclosure.HabitatType>())
-                    {
-                        <option value="@habitat">@habitat</option>
-                    }
-                </select>
-                <span asp-validation-for="EnclosureHabitatType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EnclosureSecurityLevel" class="control-label"></label>
-                <br />
-                <select id="EnclosureSecurityLevel" name="EnclosureSecurityLevel">
-                    @foreach (var security in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.SecurityLevel)).Cast<Dierentuin42.Models.Enclosure.SecurityLevel>())
-                    {
-                        <option value="@security">@security</option>
-                    }
-                </select>
-                <span asp-validation-for="EnclosureSecurityLevel" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Size" class="control-label"></label>
-                <input asp-for="Size" class="form-control" />
-                <span asp-validation-for="Size" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Terug naar overzicht</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+<style>
+    body {
+        background-color: #fff8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        max-width: 900px;
+    }
+
+    .shadow-sm {
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .shadow-lg {
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-custom {
+        background-color: #ffcc00;
+        border-color: #ffcc00;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            background-color: #e6b800;
+            border-color: #cc9e00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        transition: all 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6368;
+            border-color: #545b61;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    h5 {
+        margin-bottom: 20px;
+    }
+
+    hr.my-3 {
+        border: 0;
+        border-top: 3px solid #ffcc00;
+        margin: 5px 0;
+    }
+
+    .btn-custom {
+        margin-top: 10px;
+    }
+
+    .btn-secondary {
+        margin-top: 10px;
+    }
+
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .w-48 {
+        width: 48%;
+    }
+
+    .btn-custom i, .btn-secondary i {
+        margin-right: 8px;
+    }
+
+    .btn-custom i {
+        font-size: 18px;
+    }
+</style>

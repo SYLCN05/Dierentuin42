@@ -1,77 +1,198 @@
 ﻿@model Dierentuin42.Models.Enclosure
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Creëer een nieuwe Verblijf";
 }
 
-<h1>Creëer een nieuwe Verblijf</h1>
+<h1 class="text-center text-primary mt-5">Creëer een Nieuw Verblijf</h1>
+<hr class="my-4" style="border: 0; border-top: 3px solid #007bff; margin: 5px 0;">
 
-<h4>Enclosure</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="bg-white p-4 rounded shadow-sm border">
+                <h5 class="text-primary text-center mb-4">Vul de gegevens van het nieuwe verblijf in</h5>
+
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <!-- Form Fields -->
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Animals" class="control-label"></label>
+                        <select id="SelectedAnimalIds" name="selectedAnimalIds" multiple class="form-control large-select">
+                            <option value="">Selecteer dieren...</option>
+                            @foreach (var animal in ViewBag.AvailableAnimals)
+                            {
+                                <option value="@animal.Value">@animal.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="EnclosureClimate" class="control-label"></label>
+                        <select asp-for="EnclosureClimate" class="form-control">
+                            <option value="">Selecteer een klimaat...</option>
+                            @foreach (var climate in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.Climate)).Cast<Dierentuin42.Models.Enclosure.Climate>())
+                            {
+                                <option value="@climate">@climate</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EnclosureClimate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="EnclosureHabitatType" class="control-label"></label>
+                        <select asp-for="EnclosureHabitatType" multiple class="form-control large-select" class="form-control">
+                            @foreach (var habitat in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.HabitatType)).Cast<Dierentuin42.Models.Enclosure.HabitatType>())
+                            {
+                                <option value="@habitat">@habitat</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EnclosureHabitatType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="EnclosureSecurityLevel" class="control-label"></label>
+                        <select asp-for="EnclosureSecurityLevel" class="form-control">
+                            <option value="">Selecteer een beveiligingsniveau...</option>
+                            @foreach (var security in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.SecurityLevel)).Cast<Dierentuin42.Models.Enclosure.SecurityLevel>())
+                            {
+                                <option value="@security">@security</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EnclosureSecurityLevel" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Size" class="control-label"></label>
+                        <input asp-for="Size" class="form-control" />
+                        <span asp-validation-for="Size" class="text-danger"></span>
+                    </div>
+
+                    <hr class="my-3" style="border: 0; border-top: 3px solid #007bff; margin: 5px 0;" />
+
+                    <!-- Knoppen -->
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-lg d-flex justify-content-center align-items-center">
+                            <i class="fas fa-save" style="margin-right: 8px;"></i> Creëer Verblijf
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-secondary btn-lg shadow-lg d-flex justify-content-center align-items-center">
+                            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Terug naar overzicht
+                        </a>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="SelectedAnimalIds">Select Animals</label>
-                <select id="SelectedAnimalIds" name="selectedAnimalIds" multiple class="form-control">
-                    @foreach (var animal in ViewBag.AvailableAnimals)
-                    {
-                        <option value="@animal.Value">@animal.Text</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="EnclosureClimate" class="control-label"></label>
-                <select asp-for="EnclosureClimate" class="form-control" >
-                    @foreach(var climate in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.Climate)).Cast<Dierentuin42.Models.Enclosure.Climate>())
-                    {
-                        <option value="@climate">@climate</option>
-                    }
-                </select>
-                <span asp-validation-for="EnclosureClimate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EnclosureHabitatType" class="control-label"></label>
-                <select asp-for="EnclosureHabitatType" class="form-control" multiple class="form-control">
-                    @foreach (var habitat in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.HabitatType)).Cast<Dierentuin42.Models.Enclosure.HabitatType>())
-                    {
-                        <option value="@habitat">@habitat</option>
-                    }
-                </select>
-                <span asp-validation-for="EnclosureHabitatType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EnclosureSecurityLevel" class="control-label"></label>
-                <select asp-for="EnclosureSecurityLevel" class="form-control">
-                    @foreach (var security in Enum.GetValues(typeof(Dierentuin42.Models.Enclosure.SecurityLevel)).Cast<Dierentuin42.Models.Enclosure.SecurityLevel>())
-                    {
-                        <option value="@security">@security</option>
-                    }
-                </select>
-                <span asp-validation-for="EnclosureSecurityLevel" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Size" class="control-label"></label>
-                <input asp-for="Size" class="form-control" />
-                <span asp-validation-for="Size" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Terug naar overzicht</a>
-</div>
+<style>
+    body {
+        background-color: #f4f7fc;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    .container {
+        max-width: 900px;
+    }
+
+    .shadow-sm {
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .shadow-lg {
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6368;
+            border-color: #545b61;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .form-control {
+        height: 38px;
+    }
+
+    .control-label {
+        font-size: 14px;
+        font-weight: bold;
+        color: #495057;
+    }
+
+    hr.my-3 {
+        border: 0;
+        border-top: 3px solid #007bff;
+        margin: 5px 0;
+    }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .d-flex .btn {
+            width: 48%;
+            padding: 12px 20px;
+            font-size: 18px;
+        }
+
+    .btn i {
+        margin-right: 8px;
+    }
+
+    .btn-primary i {
+        font-size: 18px;
+    }
+
+    /* Style voor de dropdowns met scroll */
+    .large-select {
+        height: auto; /* Zorgt ervoor dat hoogte afhankelijk is van de inhoud */
+        max-height: 200px; /* Maximale hoogte instellen */
+        overflow-y: auto; /* Scrollbalk inschakelen indien nodig */
+    }
+</style>
+
+<!--VOOR CREEER ICON-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />

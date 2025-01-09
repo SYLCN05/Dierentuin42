@@ -1,59 +1,146 @@
 ﻿@model Dierentuin42.Models.Enclosure
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details van het Verblijf";
 }
 
-<h1>Details</h1>
+<h1 class="text-center text-primary mt-5">Details van het Verblijf</h1>
 
-<div>
-    <h4>Enclosure</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Dieren:
-        </dt>
-        <dd class="col-sm-10">
-            <ul>
-                @foreach (var animal in Model.Animals)
-                {
-                    <li>@animal.Name</li>
-                }
-            </ul>
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EnclosureClimate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EnclosureClimate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EnclosureHabitatType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EnclosureHabitatType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EnclosureSecurityLevel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EnclosureSecurityLevel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Size)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Size)
-        </dd>
-    </dl>
+<!-- HORIZONTALE LIJN -->
+<hr class="my-4">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="bg-white p-4 rounded shadow-sm border">
+                <h5 class="text-primary text-center mb-4">Gegevens van het Verblijf</h5>
+
+                <!-- GEGEVENS TABEL -->
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">@Html.DisplayNameFor(model => model.Name)</td>
+                            <td>@Html.DisplayFor(model => model.Name)</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">@Html.DisplayNameFor(model => model.EnclosureClimate)</td>
+                            <td>@Html.DisplayFor(model => model.EnclosureClimate)</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">@Html.DisplayNameFor(model => model.EnclosureHabitatType)</td>
+                            <td>@Html.DisplayFor(model => model.EnclosureHabitatType)</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">@Html.DisplayNameFor(model => model.EnclosureSecurityLevel)</td>
+                            <td>@Html.DisplayFor(model => model.EnclosureSecurityLevel)</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">@Html.DisplayNameFor(model => model.Size)</td>
+                            <td>@Html.DisplayFor(model => model.Size)</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Dieren in dit Verblijf</td>
+                            <td>
+                                <ul>
+                                    @foreach (var animal in Model.Animals)
+                                    {
+                                        <li>@animal.Name</li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- HORIZONTALE LIJN -->
+                <hr class="my-4">
+
+                <!-- BEWERK EN TERUG OVERZICHT KNOPPEN -->
+                <div class="d-flex justify-content-between">
+                    <div class="w-48">
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning btn-lg w-100 shadow-lg">
+                            <i class="fas fa-edit"></i> Bewerk Verblijf
+                        </a>
+                    </div>
+                    <div class="w-48">
+                        <a asp-action="Index" class="btn btn-secondary btn-lg w-100 shadow-lg">
+                            <i class="fas fa-arrow-left"></i> Terug naar overzicht
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Terug naar overzicht</a>
-</div>
+
+<style>
+    body {
+        background-color: #f4f7fc;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        max-width: 900px;
+    }
+
+    .shadow-sm {
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .shadow-lg {
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        transition: all 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        transition: all 0.3s ease;
+    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    .lead {
+        font-size: 1.25rem;
+        color: #495057;
+    }
+
+    h5 {
+        margin-bottom: 20px;
+    }
+
+    hr.my-4 {
+        border: 0;
+        border-top: 3px solid #007bff;
+        margin: 20px 0;
+    }
+
+    .btn-warning i, .btn-secondary i {
+        margin-right: 8px;
+    }
+
+    .d-flex .w-48 {
+        width: 48%;
+    }
+
+    .fw-bold {
+        font-weight: bold;
+    }
+</style>

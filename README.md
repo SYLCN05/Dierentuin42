@@ -50,8 +50,9 @@ Actions such as Sunrise, Sunset, Feeding time, and CheckConstraints
 
 *Zoo (Zoo)*
 
+CRUD operations on zoos
 Actions such as Sunrise, Sunset, Feeding time, and CheckConstraints
-AutoAssign action for automatically assigning animals to enclosures
+
 
 
 ## What We Have Learned

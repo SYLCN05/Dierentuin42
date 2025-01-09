@@ -23,27 +23,40 @@ namespace Dierentuin42.Controllers
         // GET: Categories (ZOEKEN EN FILTEREN)
         public async Task<IActionResult> Index(string searchText, string filterName)
         {
+            var categories = await GetFilteredCategoriesAsync(searchText, filterName);
+
+            await SetCategoryNamesForViewDataAsync();
+
+            return View(categories);
+        }
+
+        private async Task<List<Category>> GetFilteredCategoriesAsync(string searchText, string filterName)
+        {
             var categoriesQuery = _context.Category.AsQueryable();
 
+            // ZOEKEN OP CATEGORIENAMEN
             if (!string.IsNullOrEmpty(searchText))
             {
                 categoriesQuery = categoriesQuery.Where(c => c.Name.Contains(searchText));
             }
 
+            // FILTEREN OP CATEGORIENAMEN
             if (!string.IsNullOrEmpty(filterName))
             {
                 categoriesQuery = categoriesQuery.Where(c => c.Name == filterName);
             }
 
-            var categories = await categoriesQuery.ToListAsync();
+            return await categoriesQuery.ToListAsync();
+        }
 
+        private async Task SetCategoryNamesForViewDataAsync()
+        {
             ViewData["CategoryNames"] = await _context.Category
                 .Select(c => c.Name)
                 .Distinct()
                 .ToListAsync();
-
-            return View(categories);
         }
+
 
 
         // GET: Categories/Details/5
